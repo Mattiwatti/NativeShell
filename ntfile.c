@@ -117,7 +117,7 @@ BOOLEAN NtFileWriteFile(HANDLE hFile, LPVOID lpData, DWORD dwBufferSize, DWORD* 
   {
     if (pRetWrittenSize) 
     {
-      *pRetWrittenSize = sIoStatus.Information;
+      *pRetWrittenSize = (DWORD)sIoStatus.Information;
     }
     return TRUE;
   }
@@ -209,7 +209,7 @@ BOOLEAN NtFileReadFile(HANDLE hFile, LPVOID pOutBuffer, DWORD dwOutBufferSize, D
   {
     if (pRetReadedSize) 
     {
-      *pRetReadedSize = sIoStatus.Information;
+      *pRetReadedSize = (DWORD)sIoStatus.Information;
     }
 
     return TRUE;
