@@ -1,7 +1,23 @@
-TARGETNAME=native
+TARGETNAME=NativeShell
 TARGETTYPE=PROGRAM
 UMTYPE=nt
 
+BUFFER_OVERFLOW_CHECKS=0
+
+# You can do this for fun
+#RDATA_MERGE=1
+
+# Or this
+#UMBASE=0x1000000
+
+# Needed for DDK 7 to find nt.lib
+!if $(386)
+# There was no x86 nt.lib in the 2003 DDK for some reason,
+# and later nt.lib files require security_init_cookie
+MINWIN_SDK_LIB_PATH=.\lib\w2k\i386
+!else
+MINWIN_SDK_LIB_PATH=$(SDK_LIB_PATH)
+!endif
 
 INCLUDES=$(DDK_INC_PATH)
 
