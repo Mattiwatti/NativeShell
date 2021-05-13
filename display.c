@@ -139,7 +139,7 @@ NTSTATUS RtlClipBackspace(VOID)
     LinePos--;
 
     // Finalize this buffer and make it unicode
-    DisplayBuffer[LinePos] = ANSI_NULL;
+    DisplayBuffer[LinePos] = UNICODE_NULL;
 
     RtlInitUnicodeString(&BackString, DisplayBuffer);
 
@@ -180,7 +180,7 @@ NTSTATUS __cdecl RtlCliDisplayString(IN PCH Message, ...)
     //// First, combine the message
     ////
     va_start(MessageList, Message);
-    n = _vsnprintf(MessageBuffer, 512, Message, MessageList); // TODO Matti: dmex commented this out why?
+    n = _vsnprintf(MessageBuffer, 512, Message, MessageList);
     MessageBuffer[n] = '\0';
     va_end(MessageList);
 

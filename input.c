@@ -103,6 +103,8 @@ NTSTATUS RtlCliOpenInputDevice(
         &Iosb,
         FILE_SHARE_READ | FILE_SHARE_WRITE,
         FILE_NON_DIRECTORY_FILE);
+    if (!NT_SUCCESS(Status))
+        return Status;
 
     // Open a handle to it
     Status = NtCreateFile(
@@ -117,6 +119,8 @@ NTSTATUS RtlCliOpenInputDevice(
         FILE_DIRECTORY_FILE,
         NULL,
         0);
+    if (!NT_SUCCESS(Status))
+        return Status;
 
     // Now create an event that will be used to wait on the device
     InitializeObjectAttributes(&ObjectAttributes, NULL, 0, NULL, NULL);
@@ -124,9 +128,11 @@ NTSTATUS RtlCliOpenInputDevice(
         &hEvent, 
         EVENT_ALL_ACCESS,
         &ObjectAttributes,
-        1,
+        SynchronizationEvent,
         0
         );
+    if (!NT_SUCCESS(Status))
+        return Status;
 
     // Return the handle
     *Handle = hDriver;

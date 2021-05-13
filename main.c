@@ -417,10 +417,18 @@ VOID RtlClipDisplayPrompt(VOID)
  *--*/
 NTSTATUS NTAPI NtProcessStartup(PPEB Context)
 {
-    PPEB Peb = NtCurrentPeb();
-    NTSTATUS Status;
+    NTSTATUS Status = STATUS_DEVICE_NOT_READY;
     PCHAR Command;
 
+#ifdef _DEBUG
+    PKUSER_SHARED_DATA SharedData = (PKUSER_SHARED_DATA)USER_SHARED_DATA;
+    UCHAR KdDebuggerEnabledVal = SharedData->KdDebuggerEnabled;
+    BOOLEAN KdDebuggerEnabled = (KdDebuggerEnabledVal & 0x1) == 0x1;
+    BOOLEAN KdDebuggerNotPresent = (KdDebuggerEnabledVal & 0x2) == 0;
+    if (KdDebuggerEnabled && !KdDebuggerNotPresent)
+        DbgBreakPoint();
+#endif
+	
     hHeap = InitHeapMemory();
     hKey = NULL;
 
@@ -431,10 +439,14 @@ NTSTATUS NTAPI NtProcessStartup(PPEB Context)
     RtlCliDisplayString("(C) Copyright 2006 TinyKRNL Project\n\n");
     RtlCliDisplayString("Type \"help\".\n\n");
 
-    while (!hKeyboard)
+    while (!hKeyboard || !NT_SUCCESS(Status))
     {
         // Setup keyboard input
         Status = RtlCliOpenInputDevice(&hKeyboard, KeyboardType);
+    	if (!NT_SUCCESS(Status))
+    	{
+            Printf("RtlCliOpenInputDevice: 0x%08lX\n", Status);
+    	}
     }
 
     // Show initial prompt

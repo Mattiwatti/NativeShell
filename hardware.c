@@ -158,7 +158,7 @@ RtlCliPrintDeviceName(IN PWCHAR Name)
                //
                wcscat(Buffer, Name);
                RtlCliDisplayString("%S\n", Buffer);
-               DbgPrint("%S\n", Buffer);
+               Printf("%ls\n", Buffer);
            }
            //
            // Close the key to the device instance name

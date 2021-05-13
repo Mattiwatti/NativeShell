@@ -14,7 +14,7 @@ NTSTATUS CreateNativeProcess(IN PWSTR file_name, IN PWSTR cmd_line, OUT PHANDLE 
 {
     UNICODE_STRING nt_file;
     PWSTR file_part;
-    NTSTATUS status = 1; // Status
+    NTSTATUS status; // Status
     UNICODE_STRING imgname; // ImageName
     UNICODE_STRING imgpath; // Nt ImagePath
     UNICODE_STRING dllpath; // Nt DllPath (DOS Name)
@@ -41,7 +41,7 @@ NTSTATUS CreateNativeProcess(IN PWSTR file_name, IN PWSTR cmd_line, OUT PHANDLE 
         return status;
     }
 
-    DbgPrint("Launching Process: %S, DllPath=%S, CmdLine=%S", imgname.Buffer, dllpath.Buffer, cmdline.Buffer);
+    Printf("Launching Process: %ls, DllPath = %ls, CmdLine = %ls\n", imgname.Buffer, dllpath.Buffer, cmdline.Buffer);
 
     status = RtlCreateUserProcess(
         &imgpath, 

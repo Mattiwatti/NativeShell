@@ -41,7 +41,15 @@ Revision History:
 #include "ntfile.h"
 #include "ntreg.h"
 
-
+#if defined(__RESHARPER__)
+#define PRINTF_ATTR(FormatIndex, FirstToCheck) \
+	[[gnu::format(printf, FormatIndex, FirstToCheck)]]
+#elif defined(__GNUC__)
+#define PRINTF_ATTR(FormatIndex, FirstToCheck) \
+	__attribute__((format(printf, FormatIndex, FirstToCheck)))
+#else
+#define PRINTF_ATTR(FormatIndex, FirstToCheck)
+#endif
 
 //
 // Device type for input/output
@@ -55,6 +63,7 @@ typedef enum _CON_DEVICE_TYPE
 //
 // Display functions
 //
+PRINTF_ATTR(1, 2)
 NTSTATUS
 __cdecl
 RtlCliDisplayString(
@@ -168,6 +177,14 @@ NTSTATUS CreateNativeProcess(IN PWSTR file_name, IN PWSTR cmd_line, OUT PHANDLE 
 #define BUFFER_SIZE 1024
 
 // Command processing:
+
+PRINTF_ATTR(1, 2)
+VOID
+__cdecl
+Printf(
+    _In_ PCCH Format,
+    _In_ ...
+);
 
 UINT StringToArguments(CHAR *str);
 

@@ -42,7 +42,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
+    <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <SpectreMitigation>false</SpectreMitigation>
@@ -114,22 +114,23 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <ControlFlowGuard>false</ControlFlowGuard>
-      <AdditionalOptions>/Zc:threadSafeInit- /Gw /Gz /EHs-c- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Gs8192 /cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- %(AdditionalOptions)</AdditionalOptions>
       <ConformanceMode>true</ConformanceMode>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CallingConvention>StdCall</CallingConvention>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <StringPooling>true</StringPooling>
-      <ExceptionHandling>false</ExceptionHandling>
       <BufferSecurityCheck>true</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <GuardEHContMetadata>false</GuardEHContMetadata>
-      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ForcedIncludeFiles>warning.h</ForcedIncludeFiles>
       <UndefinePreprocessorDefinitions>_MT</UndefinePreprocessorDefinitions>
       <OmitDefaultLibName>true</OmitDefaultLibName>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Native</SubSystem>
@@ -163,23 +164,24 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <ControlFlowGuard>false</ControlFlowGuard>
-      <AdditionalOptions>/Zc:threadSafeInit- /Gw /Gz /EHs-c- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Gs8192 /cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- %(AdditionalOptions)</AdditionalOptions>
       <ConformanceMode>true</ConformanceMode>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CallingConvention>StdCall</CallingConvention>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <ExceptionHandling>false</ExceptionHandling>
       <StringPooling>true</StringPooling>
       <BufferSecurityCheck>true</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <GuardEHContMetadata>false</GuardEHContMetadata>
-      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ForcedIncludeFiles>warning.h</ForcedIncludeFiles>
       <UndefinePreprocessorDefinitions>_MT</UndefinePreprocessorDefinitions>
       <OmitDefaultLibName>true</OmitDefaultLibName>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Native</SubSystem>
@@ -199,7 +201,6 @@
       <StackCommitSize>8192</StackCommitSize>
       <StackReserveSize>524288</StackReserveSize>
       <BaseAddress>0x100000000</BaseAddress>
-      <LargeAddressAware>true</LargeAddressAware>
       <CETCompat>false</CETCompat>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
@@ -213,7 +214,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <ControlFlowGuard>false</ControlFlowGuard>
-      <AdditionalOptions>/Zc:threadSafeInit- /Gw /Gz /EHs-c- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Gs8192 /cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- %(AdditionalOptions)</AdditionalOptions>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <ConformanceMode>true</ConformanceMode>
@@ -221,14 +222,15 @@
       <CallingConvention>StdCall</CallingConvention>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <StringPooling>true</StringPooling>
-      <ExceptionHandling>false</ExceptionHandling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <GuardEHContMetadata>false</GuardEHContMetadata>
-      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ForcedIncludeFiles>warning.h</ForcedIncludeFiles>
       <UndefinePreprocessorDefinitions>_MT</UndefinePreprocessorDefinitions>
       <OmitDefaultLibName>true</OmitDefaultLibName>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Native</SubSystem>
@@ -263,7 +265,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <ControlFlowGuard>false</ControlFlowGuard>
-      <AdditionalOptions>/Zc:threadSafeInit- /Gw /Gz /EHs-c- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Gs8192 /cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- %(AdditionalOptions)</AdditionalOptions>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <ConformanceMode>true</ConformanceMode>
@@ -271,14 +273,15 @@
       <CallingConvention>StdCall</CallingConvention>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <StringPooling>true</StringPooling>
-      <ExceptionHandling>false</ExceptionHandling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <GuardEHContMetadata>false</GuardEHContMetadata>
-      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ForcedIncludeFiles>warning.h</ForcedIncludeFiles>
       <UndefinePreprocessorDefinitions>_MT</UndefinePreprocessorDefinitions>
       <OmitDefaultLibName>true</OmitDefaultLibName>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Native</SubSystem>
@@ -299,7 +302,6 @@
       <StackCommitSize>8192</StackCommitSize>
       <StackReserveSize>524288</StackReserveSize>
       <BaseAddress>0x100000000</BaseAddress>
-      <LargeAddressAware>true</LargeAddressAware>
       <CETCompat>false</CETCompat>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>

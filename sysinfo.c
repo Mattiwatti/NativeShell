@@ -83,7 +83,7 @@ RtlCliListDrivers(VOID)
 {
     PRTL_PROCESS_MODULES ModuleInfo;
     PRTL_PROCESS_MODULE_INFORMATION ModuleEntry;
-    NTSTATUS Status = STATUS_SUCCESS;
+    NTSTATUS Status;
     ULONG Size = 0;
     ULONG i;
 
@@ -91,19 +91,24 @@ RtlCliListDrivers(VOID)
     // Get the count first
     //
     Status = NtQuerySystemInformation(SystemModuleInformation,
-        &Size,
-        sizeof(Size),
-        NULL);
+        NULL,
+        0,
+        &Size);
+    if (Status != STATUS_INFO_LENGTH_MISMATCH)
+        return Status;
 
     //
     // Get the total buffer size
     //
-    Size = sizeof(*ModuleInfo) + (Size * sizeof(*ModuleInfo));
+    //Size = sizeof(*ModuleInfo) + (Size * sizeof(*ModuleInfo)); // Matti: ???
+    Size *= 2;
 
     //
     // Allocate it
     //
-    ModuleInfo = RtlAllocateHeap(RtlGetProcessHeap(), 0, Size);
+    ModuleInfo = RtlAllocateHeap(RtlGetProcessHeap(), HEAP_ZERO_MEMORY, Size);
+    if (ModuleInfo == NULL)
+        return STATUS_INSUFFICIENT_RESOURCES;
 
     //
     // Query the buffer
@@ -113,10 +118,13 @@ RtlCliListDrivers(VOID)
         ModuleInfo,
         Size,
         NULL);
+    if (!NT_SUCCESS(Status))
+        return Status;
+	
     //
     // Display Header
     //
-    RtlCliDisplayString("*** ACTIVE MODULE LIST - DUMPING %d MODULES\n", ModuleInfo->NumberOfModules);
+    RtlCliDisplayString("*** ACTIVE MODULE LIST - DUMPING %ld MODULES\n", ModuleInfo->NumberOfModules);
 
     //
     // Now walk every module in it
@@ -134,7 +142,10 @@ RtlCliListDrivers(VOID)
             // Hold for more input
             //
             RtlCliDisplayString("--- PRESS SPACE TO CONTINUE ---\n");
-            while (RtlCliGetChar(hKeyboard) != ' ');
+
+        	while (RtlCliGetChar(hKeyboard) != ' ')
+            {
+            }
         }
 
 
@@ -147,7 +158,7 @@ RtlCliListDrivers(VOID)
         // Display basic data
         //
         RtlCliDisplayString(
-            "%s - Base: %p Size: 0x%lx\n",
+            "%hs - Base: 0x%p Size: 0x%lx\n",
             ModuleEntry->FullPathName,
             ModuleEntry->ImageBase,
             ModuleEntry->ImageSize);
@@ -174,14 +185,14 @@ RtlCliListDrivers(VOID)
  *--*/
 NTSTATUS RtlCliListProcesses(VOID)
 {
-    PSYSTEM_PROCESS_INFORMATION ModuleInfo = 0;
+    PSYSTEM_PROCESS_INFORMATION ModuleInfo;
     NTSTATUS Status;
     ULONG Size = 0x10000;
 
     //
     // Allocate a static buffer that should be large enough
     //
-    ModuleInfo = RtlAllocateHeap(RtlGetProcessHeap(), 0, Size);
+    ModuleInfo = RtlAllocateHeap(RtlGetProcessHeap(), HEAP_ZERO_MEMORY, Size);
     if (!ModuleInfo) return STATUS_INSUFFICIENT_RESOURCES;
 
     //
@@ -206,12 +217,12 @@ NTSTATUS RtlCliListProcesses(VOID)
         //
         // Display basic data
         //
-        RtlCliDisplayString("[%lx] %S - WS/PF/V:[%dK/%dK/%dK] Threads: %d\n",
-                         ModuleInfo->UniqueProcessId,
+        RtlCliDisplayString("[%lu] %ls - WS/PF/V:[%ldK/%ldK/%ldK] Threads: %ld\n",
+                         (ULONG)(ULONG_PTR)ModuleInfo->UniqueProcessId,
                          ModuleInfo->ImageName.Buffer,
-                         ModuleInfo->WorkingSetSize / 1024,
-                         ModuleInfo->PagefileUsage / 1024,
-                         ModuleInfo->VirtualSize / 1024,
+                         (ULONG)ModuleInfo->WorkingSetSize / 1024,
+                         (ULONG)ModuleInfo->PagefileUsage / 1024,
+                         (ULONG)ModuleInfo->VirtualSize / 1024,
                          ModuleInfo->NumberOfThreads);
 
 
@@ -377,9 +388,9 @@ RtlCliDumpSysInfo(VOID)
     // Display User-Mode Virtual Memory Information
     //
     RtlCliDisplayString(
-        "[USR] User-Mode Range: 0x%08X-0x%X. Allocation Granularity: %dKB\n",
-        BasicInfo.MinimumUserModeAddress,
-        BasicInfo.MaximumUserModeAddress,
+        "[USR] User-Mode Range: 0x%p-0x%p. Allocation Granularity: %dKB\n",
+        (PVOID)BasicInfo.MinimumUserModeAddress,
+        (PVOID)BasicInfo.MaximumUserModeAddress,
         BasicInfo.AllocationGranularity / 1024);
 
     //
@@ -457,12 +468,12 @@ RtlCliDumpSysInfo(VOID)
     //
     // Display FileSystem Cache Information
     //
-    RtlCliDisplayString("[CACHE] Size: %dKB. Peak: %dKB. "
-                        "Min WS: %dKB. Max WS: %dKB\n",
-                        CacheInfo.CurrentSize / 1024,
-                        CacheInfo.PeakSize / 1024,
-                        CacheInfo.MinimumWorkingSet,
-                        CacheInfo.MaximumWorkingSet);
+    RtlCliDisplayString("[CACHE] Size: %ldKB. Peak: %ldKB. "
+                        "Min WS: %ldKB. Max WS: %ldKB\n",
+                        (ULONG)CacheInfo.CurrentSize / 1024,
+                        (ULONG)CacheInfo.PeakSize / 1024,
+                        (ULONG)CacheInfo.MinimumWorkingSet,
+                        (ULONG)CacheInfo.MaximumWorkingSet);
 
     //
     // Return success

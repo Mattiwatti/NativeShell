@@ -1,4 +1,34 @@
 #include "precomp.h"
+#include <dpfilter.h>
+
+NTSYSAPI
+ULONG
+NTAPI
+vDbgPrintExWithPrefix(
+    _In_z_ PCCH Prefix,
+    _In_ ULONG ComponentId,
+    _In_ ULONG Level,
+    _In_z_ PCCH Format,
+    _In_ va_list arglist
+	);
+
+VOID
+__cdecl
+Printf(
+    _In_ PCCH Format,
+    _In_ ...
+	)
+{
+    CHAR Message[512];
+    va_list VaList;
+    ULONG n;
+	
+    va_start(VaList, Format);
+    n = _vsnprintf(Message, sizeof(Message) - sizeof(CHAR), Format, VaList);
+    Message[n] = '\0';
+    vDbgPrintExWithPrefix("[NATIVE SHELL] ", DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, Message, VaList);
+    va_end(VaList);
+}
 
 /*
  *****************************************************************************
@@ -20,7 +50,7 @@ BOOL GetFullPath(IN PSTR filename, OUT PWSTR out, IN BOOL add_slash)
 
     RtlCliGetCurrentDirectory(cur_path);
 
-    if (NULL == filename || NULL == cur_path || NULL == out)
+    if (NULL == filename || cur_path[0] == L'\0' || NULL == out)
     {
         return FALSE;
     }
@@ -179,7 +209,7 @@ ULONG GetFileAttributesNt(PWSTR filename)
 
 BOOL FolderExists(PWSTR foldername)
 {
-    BOOL retval = FALSE;
+    BOOL retval;
     UNICODE_STRING u_filename, nt_filename;
     FILE_BASIC_INFORMATION fbi;
     OBJECT_ATTRIBUTES oa;
@@ -249,7 +279,7 @@ BOOLEAN SetUnicodeString(UNICODE_STRING* pustrRet, WCHAR* pwszData)
     }
 
     pustrRet->Buffer = pwszData;
-    pustrRet->Length = wcslen( pwszData ) * sizeof(WCHAR);
+    pustrRet->Length = (USHORT)(wcslen( pwszData ) * sizeof(WCHAR));
     pustrRet->MaximumLength = pustrRet->Length + sizeof(WCHAR);
 
 	return TRUE;
@@ -257,7 +287,12 @@ BOOLEAN SetUnicodeString(UNICODE_STRING* pustrRet, WCHAR* pwszData)
 
 HANDLE InitHeapMemory(void)
 {
-    return RtlCreateHeap(HEAP_GROWABLE, NULL, 0, 0, NULL, NULL);
+    ULONG Flags = HEAP_GROWABLE | HEAP_ZERO_MEMORY;
+	
+#ifdef _DEBUG
+    Flags |= HEAP_GENERATE_EXCEPTIONS | HEAP_TAIL_CHECKING_ENABLED | HEAP_FREE_CHECKING_ENABLED;
+#endif
+    return RtlCreateHeap(Flags, NULL, 0, 0, NULL, NULL);
 }
 
 BOOLEAN DeinitHeapMemory(HANDLE hHeap)
