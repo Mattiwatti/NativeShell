@@ -22,9 +22,9 @@ Author:
 //
 // Dependencies
 //
-#include <umtypes.h>
-#include <mmtypes.h>
-#include <ldrtypes.h>
+#include "umtypes.h"
+#include "mmtypes.h"
+#include "ldrtypes.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -1364,11 +1364,11 @@ typedef EXCEPTION_ROUTINE *PEXCEPTION_ROUTINE;
 //
 // Exception Record
 //
-typedef struct _EXCEPTION_REGISTRATION_RECORD
-{
-    struct _EXCEPTION_REGISTRATION_RECORD *Next;
-    PEXCEPTION_ROUTINE Handler;
-} EXCEPTION_REGISTRATION_RECORD, *PEXCEPTION_REGISTRATION_RECORD;
+//typedef struct _EXCEPTION_REGISTRATION_RECORD
+//{
+//    struct _EXCEPTION_REGISTRATION_RECORD *Next;
+//    PEXCEPTION_ROUTINE Handler;
+//} EXCEPTION_REGISTRATION_RECORD, *PEXCEPTION_REGISTRATION_RECORD;
 #endif /* NTOS_MODE_USER */
 
 //

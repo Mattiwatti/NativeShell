@@ -4,7 +4,7 @@
 
 //#define DEBUGMODE
 
-#include <ntndk.h> // include this for its native functions and defn's
+//#include <ntndk.h> // include this for its native functions and defn's
 //#include "stdio.h"
 
 BOOLEAN NtFileOpenFile(HANDLE* phRetFile, WCHAR* pwszFileName, BOOLEAN bWrite, BOOLEAN bOverwrite);

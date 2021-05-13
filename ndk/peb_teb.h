@@ -16,7 +16,7 @@ Author:
 
 --*/
 
-#include <rtltypes.h>
+#include "rtltypes.h"
 
 #define PASTE2(x,y)       x##y
 #define PASTE(x,y)         PASTE2(x,y)

@@ -81,28 +81,24 @@
     <OutDir>$(SolutionDir)bin\$(Configuration)$(PlatformArchitecture)\</OutDir>
     <IntDir>$(ProjectDir)obj\$(Configuration)$(PlatformArchitecture)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Dev\WinDDK\7600.16385.1\inc\api;C:\Dev\WinDDK\7600.16385.1\inc\crt;C:\Dev\WinDDK\7600.16385.1\inc\ddk;$(ProjectDir)ndk</IncludePath>
     <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)bin\$(Configuration)$(PlatformArchitecture)\</OutDir>
     <IntDir>$(ProjectDir)obj\$(Configuration)$(PlatformArchitecture)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Dev\WinDDK\7600.16385.1\inc\api;C:\Dev\WinDDK\7600.16385.1\inc\crt;C:\Dev\WinDDK\7600.16385.1\inc\ddk;$(ProjectDir)ndk</IncludePath>
     <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)bin\$(Configuration)$(PlatformArchitecture)\</OutDir>
     <IntDir>$(ProjectDir)obj\$(Configuration)$(PlatformArchitecture)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Dev\WinDDK\7600.16385.1\inc\api;C:\Dev\WinDDK\7600.16385.1\inc\crt;C:\Dev\WinDDK\7600.16385.1\inc\ddk;$(ProjectDir)ndk</IncludePath>
     <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)$(PlatformArchitecture)\</OutDir>
     <IntDir>$(ProjectDir)obj\$(Configuration)$(PlatformArchitecture)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Dev\WinDDK\7600.16385.1\inc\api;C:\Dev\WinDDK\7600.16385.1\inc\crt;C:\Dev\WinDDK\7600.16385.1\inc\ddk;$(ProjectDir)ndk</IncludePath>
     <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -114,7 +110,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <ControlFlowGuard>false</ControlFlowGuard>
-      <AdditionalOptions>/Gs8192 /cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- %(AdditionalOptions)</AdditionalOptions>
       <ConformanceMode>true</ConformanceMode>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CallingConvention>StdCall</CallingConvention>
@@ -147,8 +143,6 @@
       <AdditionalOptions>/NOVCFEATURE /NOCOFFGRPINFO /PDBALTPATH:%_PDB% /OSVERSION:5.1 %(AdditionalOptions)</AdditionalOptions>
       <SetChecksum>true</SetChecksum>
       <MergeSections>_PAGE=PAGE;_TEXT=.text</MergeSections>
-      <StackReserveSize>262144</StackReserveSize>
-      <StackCommitSize>8192</StackCommitSize>
       <BaseAddress>0x1000000</BaseAddress>
       <LargeAddressAware>true</LargeAddressAware>
       <CETCompat>false</CETCompat>
@@ -164,7 +158,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <ControlFlowGuard>false</ControlFlowGuard>
-      <AdditionalOptions>/Gs8192 /cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- %(AdditionalOptions)</AdditionalOptions>
       <ConformanceMode>true</ConformanceMode>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CallingConvention>StdCall</CallingConvention>
@@ -175,7 +169,6 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <GuardEHContMetadata>false</GuardEHContMetadata>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <ForcedIncludeFiles>warning.h</ForcedIncludeFiles>
       <UndefinePreprocessorDefinitions>_MT</UndefinePreprocessorDefinitions>
       <OmitDefaultLibName>true</OmitDefaultLibName>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -198,8 +191,6 @@
       <AdditionalOptions>/NOVCFEATURE /NOCOFFGRPINFO /PDBALTPATH:%_PDB% /OSVERSION:5.2 %(AdditionalOptions)</AdditionalOptions>
       <SetChecksum>true</SetChecksum>
       <MergeSections>_PAGE=PAGE;_TEXT=.text</MergeSections>
-      <StackCommitSize>8192</StackCommitSize>
-      <StackReserveSize>524288</StackReserveSize>
       <BaseAddress>0x100000000</BaseAddress>
       <CETCompat>false</CETCompat>
       <GenerateMapFile>true</GenerateMapFile>
@@ -214,7 +205,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <ControlFlowGuard>false</ControlFlowGuard>
-      <AdditionalOptions>/Gs8192 /cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- %(AdditionalOptions)</AdditionalOptions>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <ConformanceMode>true</ConformanceMode>
@@ -248,8 +239,6 @@
       <AdditionalOptions>/NOVCFEATURE /NOCOFFGRPINFO /PDBALTPATH:%_PDB% /OSVERSION:5.1 %(AdditionalOptions)</AdditionalOptions>
       <SetChecksum>true</SetChecksum>
       <MergeSections>_PAGE=PAGE;_TEXT=.text</MergeSections>
-      <StackReserveSize>262144</StackReserveSize>
-      <StackCommitSize>8192</StackCommitSize>
       <BaseAddress>0x1000000</BaseAddress>
       <LargeAddressAware>true</LargeAddressAware>
       <CETCompat>false</CETCompat>
@@ -265,7 +254,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <ControlFlowGuard>false</ControlFlowGuard>
-      <AdditionalOptions>/Gs8192 /cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- %(AdditionalOptions)</AdditionalOptions>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <ConformanceMode>true</ConformanceMode>
@@ -299,8 +288,6 @@
       <AdditionalOptions>/NOVCFEATURE /NOCOFFGRPINFO /PDBALTPATH:%_PDB% /OSVERSION:5.2 %(AdditionalOptions)</AdditionalOptions>
       <SetChecksum>true</SetChecksum>
       <MergeSections>_PAGE=PAGE;_TEXT=.text</MergeSections>
-      <StackCommitSize>8192</StackCommitSize>
-      <StackReserveSize>524288</StackReserveSize>
       <BaseAddress>0x100000000</BaseAddress>
       <CETCompat>false</CETCompat>
       <GenerateMapFile>true</GenerateMapFile>

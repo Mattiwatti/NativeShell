@@ -152,7 +152,6 @@ VOID RtlClipProcessMessage(PCHAR Command)
         //
         // Get the current directory
         //
-        RtlZeroMemory(CurrentDirectory, sizeof(CurrentDirectory));
         RtlCliGetCurrentDirectory(CurrentDirectory);
 
         //
@@ -190,7 +189,7 @@ VOID RtlClipProcessMessage(PCHAR Command)
     else if (!_strnicmp(Command, "vid", 6))
     {
         UINT j;
-         WCHAR i, w;
+        WCHAR w;
         UNICODE_STRING us;
 
         LARGE_INTEGER delay;
@@ -208,9 +207,8 @@ VOID RtlClipProcessMessage(PCHAR Command)
         {
             j++;
 
-           NtDelayExecution(FALSE, &delay);
+           //NtDelayExecution(FALSE, &delay);
 
-           //w = i;
            if (w != L'\n' && w != L'\r')
             {
                   RtlCliPutChar(w);

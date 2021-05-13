@@ -22,9 +22,9 @@ Author:
 //
 // Dependencies
 //
-#include <umtypes.h>
-#include <ketypes.h>
-#include <section_attribs.h>
+#include "umtypes.h"
+#include "ketypes.h"
+#include "section_attribs.h"
 
 #ifndef NTOS_MODE_USER
 

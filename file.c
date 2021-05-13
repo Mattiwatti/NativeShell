@@ -115,8 +115,8 @@ VOID RtlCliDumpFileInfo(PFILE_BOTH_DIR_INFORMATION DirInfo)
     WCHAR FileStringSize[100];
     WCHAR ShortStringSize[100];
 
-    UINT file_size;
-    UINT short_size;
+    UINT file_size = 0;
+    UINT short_size = 0;
 
     //
     // The filename isn't null-terminated, and the next structure follows
@@ -151,8 +151,8 @@ VOID RtlCliDumpFileInfo(PFILE_BOTH_DIR_INFORMATION DirInfo)
     file_size = DirInfo->FileNameLength / sizeof(WCHAR);
     short_size = DirInfo->ShortNameLength / sizeof(WCHAR);
 
-    swprintf(ShortStringSize, L"%d", short_size);
-    swprintf(FileStringSize, L"%d", file_size);
+    swprintf(ShortStringSize, sizeof(ShortStringSize), L"%d", short_size);
+    swprintf(FileStringSize, sizeof(ShortStringSize), L"%d", file_size);
 
     if (DirInfo->ShortNameLength)
     {
@@ -161,7 +161,7 @@ VOID RtlCliDumpFileInfo(PFILE_BOTH_DIR_INFORMATION DirInfo)
     }
     else
     {
-        swprintf(ShortString, L" ");
+        swprintf(ShortString, sizeof(ShortString), L" ");
     }
 
     if (DirInfo->FileNameLength)
@@ -171,7 +171,7 @@ VOID RtlCliDumpFileInfo(PFILE_BOTH_DIR_INFORMATION DirInfo)
     }
     else
     {
-        swprintf(FileString, L" ");
+        swprintf(FileString, sizeof(ShortString), L" ");
     }
 
     RtlCliDisplayString(

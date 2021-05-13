@@ -22,17 +22,17 @@ Author:
 //
 // Dependencies
 //
-#include <umtypes.h>
+#include "umtypes.h"
 #include <cfg.h>
 #if !defined(NTOS_MODE_USER)
 #include <ntimage.h>
 #endif
-#include <cmtypes.h>
-#include <ketypes.h>
-#include <potypes.h>
-#include <lpctypes.h>
+#include "cmtypes.h"
+#include "ketypes.h"
+#include "potypes.h"
+#include "lpctypes.h"
 #ifdef NTOS_MODE_USER
-#include <obtypes.h>
+#include "obtypes.h"
 #endif
 
 #ifdef __cplusplus

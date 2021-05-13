@@ -22,7 +22,7 @@ Author:
 //
 // Dependencies
 //
-#include <umtypes.h>
+#include "umtypes.h"
 
 //
 // Resource Type Levels

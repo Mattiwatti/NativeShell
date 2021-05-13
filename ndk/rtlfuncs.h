@@ -22,11 +22,11 @@ Author:
 //
 // Dependencies
 //
-#include <umtypes.h>
-#include <ntnls.h>
-#include <rtltypes.h>
-#include <pstypes.h>
-#include <extypes.h>
+#include "umtypes.h"
+//#include "ntnls.h"
+#include "rtltypes.h"
+#include "pstypes.h"
+#include "extypes.h"
 #include "in6addr.h"
 #include "inaddr.h"
 
@@ -4238,7 +4238,7 @@ RtlInitNlsTables(
     _In_ PUSHORT AnsiTableBase,
     _In_ PUSHORT OemTableBase,
     _In_ PUSHORT CaseTableBase,
-    _Out_ PNLSTABLEINFO NlsTable
+    _Out_ PVOID NlsTable
 );
 
 _IRQL_requires_max_(PASSIVE_LEVEL)
@@ -4247,14 +4247,14 @@ VOID
 NTAPI
 RtlInitCodePageTable(
     _In_ PUSHORT TableBase,
-    _Out_ PCPTABLEINFO CodePageTable
+    _Out_ PVOID CodePageTable
 );
 
 NTSYSAPI
 VOID
 NTAPI
 RtlResetRtlTranslations(
-    _In_ PNLSTABLEINFO NlsTable);
+    _In_ PVOID NlsTable);
 
 #if defined(NTOS_MODE_USER) && !defined(NO_RTL_INLINES)
 

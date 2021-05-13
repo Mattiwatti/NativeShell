@@ -28,8 +28,6 @@ Revision History:
 
 --*/
 #include "precomp.h"
-#include <stdio.h>
-#include <wchar.h>
 
 WCHAR DisplayBuffer[1024];
 USHORT LinePos = 0;

@@ -47,7 +47,7 @@ Author:
 #undef WIN32_NO_STATUS
 #include <ntstatus.h>
 #include <winioctl.h>
-#include <ntnls.h>
+//#include <ntnls.h>
 
 //
 // Compiler Definitions
