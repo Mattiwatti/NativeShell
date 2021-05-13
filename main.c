@@ -152,6 +152,7 @@ VOID RtlClipProcessMessage(PCHAR Command)
         //
         // Get the current directory
         //
+        RtlZeroMemory(CurrentDirectory, sizeof(CurrentDirectory));
         RtlCliGetCurrentDirectory(CurrentDirectory);
 
         //
@@ -159,8 +160,6 @@ VOID RtlClipProcessMessage(PCHAR Command)
         //
         RtlInitUnicodeString(&CurrentDirectoryString, CurrentDirectory);
         RtlCliPrintString(&CurrentDirectoryString);
-
-        RtlFreeUnicodeString(&CurrentDirectoryString);
     }
     else if (!_strnicmp(Command, "dir", 3))
     {

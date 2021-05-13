@@ -115,8 +115,8 @@ VOID RtlCliDumpFileInfo(PFILE_BOTH_DIR_INFORMATION DirInfo)
     WCHAR FileStringSize[100];
     WCHAR ShortStringSize[100];
 
-    UINT file_size = 0;
-    UINT short_size = 0;
+    UINT file_size;
+    UINT short_size;
 
     //
     // The filename isn't null-terminated, and the next structure follows
