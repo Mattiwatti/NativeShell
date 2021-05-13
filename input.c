@@ -70,9 +70,9 @@ CHAR CurrentPosition = 0;
  * @remarks This routine supports both mouse and keyboard input devices.
  *
  *--*/
-NTSTATUS
-RtlCliOpenInputDevice(OUT PHANDLE Handle,
-                      IN CON_DEVICE_TYPE Type)
+NTSTATUS RtlCliOpenInputDevice(
+    OUT PHANDLE Handle,
+    IN CON_DEVICE_TYPE Type)
 {
     UNICODE_STRING Driver;
     OBJECT_ATTRIBUTES ObjectAttributes;
@@ -80,50 +80,57 @@ RtlCliOpenInputDevice(OUT PHANDLE Handle,
     HANDLE hDriver;
     NTSTATUS Status;
 
-    //
     // Chose the driver to use
     // FIXME: Support MouseType later
     // FIXME: Don't hardcode keyboard path
-    //
     if (Type == KeyboardType)
     {
         RtlInitUnicodeString(&Driver, L"\\Device\\KeyboardClass0");
     }
 
-    //
     // Initialize the object attributes
-    //
-    InitializeObjectAttributes(&ObjectAttributes,
-                               &Driver,
-                               OBJ_CASE_INSENSITIVE,
-                               NULL,
-                               NULL);
+    InitializeObjectAttributes(
+        &ObjectAttributes,
+        &Driver,
+        OBJ_CASE_INSENSITIVE,
+        NULL,
+        NULL);
 
-    //
+    Status = NtOpenFile(
+        &hDriver,
+        SYNCHRONIZE | FILE_READ_ATTRIBUTES,//,FILE_ALL_ACCESS,
+        &ObjectAttributes,
+        &Iosb,
+        FILE_SHARE_READ | FILE_SHARE_WRITE,
+        FILE_NON_DIRECTORY_FILE);
+
     // Open a handle to it
-    //
-    Status = NtCreateFile(&hDriver,
-                          SYNCHRONIZE | GENERIC_READ | FILE_READ_ATTRIBUTES,
-                          &ObjectAttributes,
-                          &Iosb,
-                          NULL,
-                          FILE_ATTRIBUTE_NORMAL,
-                          0,
-                          FILE_OPEN,
-                          FILE_DIRECTORY_FILE,
-                          NULL,
-                          0);
+    Status = NtCreateFile(
+        &hDriver,
+        SYNCHRONIZE | GENERIC_READ | FILE_READ_ATTRIBUTES,
+        &ObjectAttributes,
+        &Iosb,
+        NULL,
+        FILE_ATTRIBUTE_NORMAL,
+        FILE_SHARE_READ,
+        FILE_OPEN,
+        FILE_DIRECTORY_FILE,
+        NULL,
+        0);
 
-    //
     // Now create an event that will be used to wait on the device
-    //
     InitializeObjectAttributes(&ObjectAttributes, NULL, 0, NULL, NULL);
-    Status = NtCreateEvent(&hEvent, EVENT_ALL_ACCESS, &ObjectAttributes, 1, 0);
+    Status = NtCreateEvent(
+        &hEvent, 
+        EVENT_ALL_ACCESS,
+        &ObjectAttributes,
+        1,
+        0
+        );
 
-    //
     // Return the handle
-    //
     *Handle = hDriver;
+
     return Status;
 }
 
@@ -146,48 +153,40 @@ RtlCliOpenInputDevice(OUT PHANDLE Handle,
  * @remarks This routine waits for input to be available.
  *
  *--*/
-NTSTATUS
-RtlClipWaitForInput(IN HANDLE hDriver,
-                    IN PVOID Buffer,
-                    IN OUT PULONG BufferSize)
+NTSTATUS RtlClipWaitForInput(
+    IN HANDLE hDriver,
+    IN PVOID Buffer,
+    IN OUT PULONG BufferSize
+    )
 {
     IO_STATUS_BLOCK Iosb;
     LARGE_INTEGER ByteOffset;
     NTSTATUS Status;
 
-    //
     // Clean up the I/O Status block and read from byte 0
-    //
     RtlZeroMemory(&Iosb, sizeof(Iosb));
     RtlZeroMemory(&ByteOffset, sizeof(ByteOffset));
 
-    //
     // Try to read the data
-    //
-    Status = NtReadFile(hDriver,
-                        hEvent,
-                        NULL,
-                        NULL,
-                        &Iosb,
-                        Buffer,
-                        *BufferSize,
-                        &ByteOffset,
-                        NULL);
+    Status = NtReadFile(
+        hDriver,
+        hEvent,
+        NULL,
+        NULL,
+        &Iosb,
+        Buffer,
+        *BufferSize,
+        &ByteOffset,
+        NULL);
 
-    //
     // Check if data is pending
-    //
     if (Status == STATUS_PENDING)
     {
-        //
         // Wait on the data to be read
-        //
         Status = NtWaitForSingleObject(hEvent, TRUE, NULL);
     }
 
-    //
     // Return status and how much data was read
-    //
     *BufferSize = (ULONG)Iosb.Information;
     return Status;
 }
@@ -205,22 +204,22 @@ RtlClipWaitForInput(IN HANDLE hDriver,
  * @remarks Documentation for this routine needs to be completed.
  *
  *--*/
-CHAR
-RtlCliGetChar(IN HANDLE hDriver)
+CHAR RtlCliGetChar(IN HANDLE hDriver)
 {
-  KEYBOARD_INPUT_DATA KeyboardData;
-  KBD_RECORD kbd_rec;
-  ULONG BufferLength = sizeof(KEYBOARD_INPUT_DATA);
+    KEYBOARD_INPUT_DATA KeyboardData;
+    KBD_RECORD kbd_rec;
+    ULONG BufferLength = sizeof(KEYBOARD_INPUT_DATA);
 
-  RtlClipWaitForInput(hDriver, &KeyboardData, &BufferLength);
+    RtlClipWaitForInput(hDriver, &KeyboardData, &BufferLength);
 
-  IntTranslateKey(&KeyboardData, &kbd_rec);
+    IntTranslateKey(&KeyboardData, &kbd_rec);
 
-  if (!kbd_rec.bKeyDown)
-  {
-    return (-1);
-  }
-  return kbd_rec.AsciiChar;
+    if (!kbd_rec.bKeyDown)
+    {
+        return (-1);
+    }
+
+    return kbd_rec.AsciiChar;
 }
 
 /*++
@@ -238,38 +237,27 @@ RtlCliGetChar(IN HANDLE hDriver)
  *          a character only if someone is actually waiting for it. This
  *          will be changed later.
  */
-PCHAR
-RtlCliGetLine(IN HANDLE hDriver)
+PCHAR RtlCliGetLine(IN HANDLE hDriver)
 {
     CHAR Char;
     BOOLEAN First = FALSE;
 
     //memset(Line, 0x00, 1024);
 
-    //
     // Wait for a new character
-    //
     while (TRUE)
     {
-        //
         // Get the character that was pressed
-        //
         Char = RtlCliGetChar(hDriver);
 
-        //
         // Check if this was ENTER
-        //
         if (Char == '\r')
         {
-            //
             // First, null-terminate the line buffer
-            //
             Line[CurrentPosition] = ANSI_NULL;
             CurrentPosition = 0;
 
-            //
             // Return it
-            //
             return Line;
         }
         else if (Char == '\b')

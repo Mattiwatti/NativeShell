@@ -42,14 +42,10 @@ Revision History:
  * @remarks Documentation for this routine needs to be completed.
  *
  *--*/
-ULONG
-RtlCliGetCurrentDirectory(IN OUT PWSTR CurrentDirectory)
+ULONG RtlCliGetCurrentDirectory(IN OUT PWSTR CurrentDirectory)
 {
-    //
     // Get the current directory into our buffer
-    //
-    return RtlGetCurrentDirectory_U(MAX_PATH * sizeof(WCHAR),
-                                    CurrentDirectory);
+    return RtlGetCurrentDirectory_U(MAX_PATH * sizeof(WCHAR), CurrentDirectory);
 }
 
 /*++
@@ -67,32 +63,31 @@ RtlCliGetCurrentDirectory(IN OUT PWSTR CurrentDirectory)
  *
  *--*/
 
-NTSTATUS
-RtlCliSetCurrentDirectory(PCHAR Directory)
+NTSTATUS RtlCliSetCurrentDirectory(PCHAR Directory)
 {
-  WCHAR buf[MAX_PATH];
-  UNICODE_STRING us;
+    WCHAR buf[MAX_PATH];
+    UNICODE_STRING us;
 
-  if (NULL == Directory) 
-  {
-    return STATUS_UNSUCCESSFUL;
-  }
+    if (NULL == Directory)
+    {
+        return STATUS_UNSUCCESSFUL;
+    }
 
-  // Full path contains at least two symbols, the second is ':'
-  if (strnlen(Directory, MAX_PATH) >= 2 && Directory[1] == ':') 
-  {
-    RtlCreateUnicodeStringFromAsciiz(&us, Directory);
+    // Full path contains at least two symbols, the second is ':'
+    if (strnlen(Directory, MAX_PATH) >= 2 && Directory[1] == ':')
+    {
+        RtlCreateUnicodeStringFromAsciiz(&us, Directory);
+        RtlSetCurrentDirectory_U(&us);
+        RtlFreeUnicodeString(&us);
+        return STATUS_SUCCESS;
+    }
+
+    GetFullPath(Directory, buf, TRUE);
+    RtlInitUnicodeString(&us, buf);
     RtlSetCurrentDirectory_U(&us);
     RtlFreeUnicodeString(&us);
+
     return STATUS_SUCCESS;
-  }
-
-  GetFullPath(Directory, buf, TRUE);
-  RtlInitUnicodeString(&us, buf);
-  RtlSetCurrentDirectory_U(&us);
-  RtlFreeUnicodeString(&us);
-
-  return STATUS_SUCCESS;
 }
 
 /*++
@@ -108,16 +103,15 @@ RtlCliSetCurrentDirectory(PCHAR Directory)
  * @remarks Documentation for this routine needs to be completed.
  *
  *--*/
-VOID
-RtlCliDumpFileInfo(PFILE_BOTH_DIR_INFORMATION DirInfo)
+VOID RtlCliDumpFileInfo(PFILE_BOTH_DIR_INFORMATION DirInfo)
 {
     PWCHAR Null;
     WCHAR Save;
     TIME_FIELDS Time;
     CHAR SizeString[16];
-    WCHAR ShortString[12+1];
-    WCHAR FileString[MAX_PATH+1];
-    
+    WCHAR ShortString[12 + 1];
+    WCHAR FileString[MAX_PATH + 1];
+
     WCHAR FileStringSize[100];
     WCHAR ShortStringSize[100];
 
@@ -134,22 +128,18 @@ RtlCliDumpFileInfo(PFILE_BOTH_DIR_INFORMATION DirInfo)
     Save = *Null;
     *Null = 0;
 
-    //
     // Get the last access time
-    //
     RtlSystemTimeToLocalTime(&DirInfo->CreationTime, &DirInfo->CreationTime);
     RtlTimeToTimeFields(&DirInfo->CreationTime, &Time);
 
-    //
     // Don't display sizes for directories
-    //
     if (!(DirInfo->FileAttributes & FILE_ATTRIBUTE_DIRECTORY))
     {
-        sprintf(SizeString, "%d", DirInfo->AllocationSize.LowPart);
+        sprintf(SizeString, "%ld", DirInfo->AllocationSize.LowPart);
     }
     else
     {
-        sprintf(SizeString, " ", DirInfo->AllocationSize.LowPart);
+        strcat(SizeString, " ");
     }
 
     //
@@ -166,34 +156,36 @@ RtlCliDumpFileInfo(PFILE_BOTH_DIR_INFORMATION DirInfo)
 
     if (DirInfo->ShortNameLength)
     {
-      memset(ShortString, 0x00, (12+1)*sizeof(WCHAR));
-      wcsncpy(ShortString, DirInfo->ShortName, short_size);
-    } 
+        memset(ShortString, 0x00, (12 + 1) * sizeof(WCHAR));
+        wcsncpy(ShortString, DirInfo->ShortName, short_size);
+    }
     else
     {
-      swprintf(ShortString, L" ");
+        swprintf(ShortString, L" ");
     }
 
     if (DirInfo->FileNameLength)
     {
-      memset(FileString, 0x00, (MAX_PATH+1)*sizeof(WCHAR));
-      wcsncpy(FileString, DirInfo->FileName, file_size);
-    } else
+        memset(FileString, 0x00, (MAX_PATH + 1) * sizeof(WCHAR));
+        wcsncpy(FileString, DirInfo->FileName, file_size);
+    }
+    else
     {
-      swprintf(FileString, L" ");
-    }    
+        swprintf(FileString, L" ");
+    }
 
-    RtlCliDisplayString("%02d.%02d.%04d %02d:%02d %s %9s %-28S %12S\n",
-                     Time.Day,
-                     Time.Month,
-                     Time.Year,
-                     Time.Hour,
-                     Time.Minute,                     
-                     DirInfo->FileAttributes & FILE_ATTRIBUTE_DIRECTORY ?
-                     "<DIR>" : "     ",
-                     SizeString,
-                     FileString,
-                     ShortString);
+    RtlCliDisplayString(
+        "%02d.%02d.%04d %02d:%02d %s %9s %-28S %12S\n",
+        Time.Day,
+        Time.Month,
+        Time.Year,
+        Time.Hour,
+        Time.Minute,
+        DirInfo->FileAttributes & FILE_ATTRIBUTE_DIRECTORY ?
+        "<DIR>" : "     ",
+        SizeString,
+        FileString,
+        ShortString);
 
 
     //
@@ -234,17 +226,15 @@ RtlCliListDirectory(VOID)
     //
     RtlCliGetCurrentDirectory(CurrentDirectory);
 
-    //
-    // Convert it to NT Format
-    //
-    if (!RtlDosPathNameToNtPathName_U(CurrentDirectory,
-                                      &DirectoryString,
-                                      NULL,
-                                      NULL))
+    if (!RtlDosPathNameToNtPathName_U(
+        CurrentDirectory,
+        &DirectoryString,
+        NULL,
+        NULL))
     {
-        //
+
         // Fail
-        //
+
         return STATUS_UNSUCCESSFUL;
     }
 
@@ -252,45 +242,39 @@ RtlCliListDirectory(VOID)
     // Initialize the object attributes
     //
     RtlCliDisplayString(" Directory of %S\n\n", CurrentDirectory);
-    InitializeObjectAttributes(&ObjectAttributes,
-                               &DirectoryString,
-                               OBJ_CASE_INSENSITIVE,
-                               NULL,
-                               NULL);
+    InitializeObjectAttributes(
+        &ObjectAttributes,
+        &DirectoryString,
+        OBJ_CASE_INSENSITIVE,
+        NULL,
+        NULL);
 
-    //
     // Open the directory
-    //
-    Status = ZwCreateFile(&DirectoryHandle,
-                          FILE_LIST_DIRECTORY,
-                          &ObjectAttributes,
-                          &IoStatusBlock,
-                          NULL,
-                          0,
-                          FILE_SHARE_READ | FILE_SHARE_WRITE,
-                          FILE_OPEN,
-                          FILE_DIRECTORY_FILE,
-                          NULL,
-                          0);
+    Status = NtCreateFile(&DirectoryHandle,
+        FILE_LIST_DIRECTORY,
+        &ObjectAttributes,
+        &IoStatusBlock,
+        NULL,
+        0,
+        FILE_SHARE_READ | FILE_SHARE_WRITE,
+        FILE_OPEN,
+        FILE_DIRECTORY_FILE,
+        NULL,
+        0);
 
-    if (!NT_SUCCESS(Status)) 
+    if (!NT_SUCCESS(Status))
     {
-      return Status;
+        return Status;
     }
 
     //
     // Allocate space for directory entry information
     //
     DirectoryInfo = RtlAllocateHeap(RtlGetProcessHeap(), 0, 4096);
-    
     if (!DirectoryInfo) 
-    {
       return STATUS_INSUFFICIENT_RESOURCES;
-    }
 
-    //
     // Create the event to wait on
-    //
     InitializeObjectAttributes(&ObjectAttributes, NULL, 0, NULL, NULL);
     Status = NtCreateEvent(&EventHandle,
                            EVENT_ALL_ACCESS,
@@ -325,11 +309,11 @@ RtlCliListDirectory(VOID)
                                       FirstQuery);
         if (Status == STATUS_PENDING)
         {
-            //
-            // Wait on the event
-            //
-            NtWaitForSingleObject(EventHandle, FALSE, NULL);
-            Status = IoStatusBlock.Status;
+           //
+           // Wait on the event
+           //
+           NtWaitForSingleObject(EventHandle, FALSE, NULL);
+           Status = IoStatusBlock.Status;
         }
 
         //
@@ -337,12 +321,12 @@ RtlCliListDirectory(VOID)
         //
         if (!NT_SUCCESS(Status))
         {
-            //
-            // Nothing left to enumerate. Close handles and free memory
-            //
-            ZwClose(DirectoryHandle);
-            RtlFreeHeap(RtlGetProcessHeap(), 0, DirectoryInfo);
-            return STATUS_SUCCESS;
+           //
+           // Nothing left to enumerate. Close handles and free memory
+           //
+           ZwClose(DirectoryHandle);
+           RtlFreeHeap(RtlGetProcessHeap(), 0, DirectoryInfo);
+           return STATUS_SUCCESS;
         }
 
         //
@@ -352,42 +336,42 @@ RtlCliListDirectory(VOID)
 
         
         while(Entry)
-        {            
-            //
-            // List the file
-            //
-            RtlCliDumpFileInfo(Entry);
+        {
+           //
+           // List the file
+           //
+           RtlCliDumpFileInfo(Entry);
 
-            if (++i > 20)
-            {
-              i = 0;
-              RtlCliDisplayString("Continue listing (Y/N):");         
-              while (TRUE)
-              {
-                c = RtlCliGetChar(hKeyboard);
-                if (c == 'n' || c == 'N')
-                {
-                  RtlCliDisplayString("\n");
-                  return STATUS_SUCCESS;
-                }
-                if (c == 'y' || c == 'Y')
-                {                  
-                  break;
-                }
-              }     
-              RtlCliDisplayString("\n");
-            }
+           if (++i > 20)
+           {
+             i = 0;
+             RtlCliDisplayString("Continue listing (Y/N):");         
+             while (TRUE)
+             {
+               c = RtlCliGetChar(hKeyboard);
+               if (c == 'n' || c == 'N')
+               {
+                 RtlCliDisplayString("\n");
+                 return STATUS_SUCCESS;
+               }
+               if (c == 'y' || c == 'Y')
+               {
+                 break;
+               }
+             }
+             RtlCliDisplayString("\n");
+           }
 
-            //
-            // Make sure we still have a file
-            //
-            if (!Entry->NextEntryOffset) break;
+           //
+           // Make sure we still have a file
+           //
+           if (!Entry->NextEntryOffset) break;
 
-            //
-            // Move to the next one
-            //
-            Entry = (PFILE_BOTH_DIR_INFORMATION)((ULONG_PTR)Entry +
-                                                 Entry->NextEntryOffset);          
+           //
+           // Move to the next one
+           //
+           Entry = (PFILE_BOTH_DIR_INFORMATION)((ULONG_PTR)Entry +
+                                                Entry->NextEntryOffset);          
         }
 
         //
@@ -395,4 +379,6 @@ RtlCliListDirectory(VOID)
         //
         FirstQuery = FALSE;
     }
+
+    return STATUS_SUCCESS;
 }

@@ -26,52 +26,22 @@ Revision History:
 --*/
 #include "precomp.h"
 
-/*++
- * @name RtlCliShutdown
- *
- * The RtlCliShutdown routine FILLMEIN
- *
- * @param None.
- *
- * @return NTSTATUS
- *
- * @remarks Documentation for this routine needs to be completed.
- *
- *--*/
-NTSTATUS
-RtlCliShutdown(VOID)
+NTSTATUS RtlCliShutdown(VOID)
 {
     BOOLEAN Old;
-
-    //
     // Get the shutdown privilege and shutdown the system
-    //
     RtlAdjustPrivilege(SE_SHUTDOWN_PRIVILEGE, TRUE, FALSE, &Old);
-    return ZwShutdownSystem(ShutdownNoReboot);
+
+    return NtShutdownSystem(ShutdownNoReboot);
 }
 
-/*++
- * @name RtlCliReboot
- *
- * The RtlCliReboot routine FILLMEIN
- *
- * @param None.
- *
- * @return NTSTATUS
- *
- * @remarks Documentation for this routine needs to be completed.
- *
- *--*/
-NTSTATUS
-RtlCliReboot(VOID)
+NTSTATUS RtlCliReboot(VOID)
 {
     BOOLEAN Old;
-
-    //
     // Get the shutdown privilege and shutdown the system
-    //
     RtlAdjustPrivilege(SE_SHUTDOWN_PRIVILEGE, TRUE, FALSE, &Old);
-    return ZwShutdownSystem(ShutdownReboot);
+
+    return NtShutdownSystem(ShutdownReboot);
 }
 
 /*++
@@ -90,12 +60,10 @@ NTSTATUS
 RtlCliPowerOff(VOID)
 {
     BOOLEAN Old;
-
-    //
     // Get the shutdown privilege and shutdown the system
-    //
     RtlAdjustPrivilege(SE_SHUTDOWN_PRIVILEGE, TRUE, FALSE, &Old);
-    return ZwShutdownSystem(ShutdownPowerOff);
+
+    return NtShutdownSystem(ShutdownPowerOff);
 }
 
 /*++
@@ -115,7 +83,7 @@ RtlCliListDrivers(VOID)
 {
     PRTL_PROCESS_MODULES ModuleInfo;
     PRTL_PROCESS_MODULE_INFORMATION ModuleEntry;
-    NTSTATUS Status;
+    NTSTATUS Status = STATUS_SUCCESS;
     ULONG Size = 0;
     ULONG i;
 
@@ -123,9 +91,9 @@ RtlCliListDrivers(VOID)
     // Get the count first
     //
     Status = NtQuerySystemInformation(SystemModuleInformation,
-                                      &Size,
-                                      sizeof(Size),
-                                      NULL);
+        &Size,
+        sizeof(Size),
+        NULL);
 
     //
     // Get the total buffer size
@@ -140,15 +108,15 @@ RtlCliListDrivers(VOID)
     //
     // Query the buffer
     //
-    Status = NtQuerySystemInformation(SystemModuleInformation,
-                                      ModuleInfo,
-                                      Size,
-                                      NULL);
+    Status = NtQuerySystemInformation(
+        SystemModuleInformation,
+        ModuleInfo,
+        Size,
+        NULL);
     //
     // Display Header
     //
-    RtlCliDisplayString("*** ACTIVE MODULE LIST - DUMPING %d MODULES\n",
-                     ModuleInfo->NumberOfModules);
+    RtlCliDisplayString("*** ACTIVE MODULE LIST - DUMPING %d MODULES\n", ModuleInfo->NumberOfModules);
 
     //
     // Now walk every module in it
@@ -178,10 +146,11 @@ RtlCliListDrivers(VOID)
         //
         // Display basic data
         //
-        RtlCliDisplayString("%s - Base: %p Size: 0x%lx\n",
-                         ModuleEntry->FullPathName,
-                         ModuleEntry->ImageBase,
-                         ModuleEntry->ImageSize);
+        RtlCliDisplayString(
+            "%s - Base: %p Size: 0x%lx\n",
+            ModuleEntry->FullPathName,
+            ModuleEntry->ImageBase,
+            ModuleEntry->ImageSize);
     }
 
     //
@@ -203,10 +172,9 @@ RtlCliListDrivers(VOID)
  * @remarks Documentation for this routine needs to be completed.
  *
  *--*/
-NTSTATUS
-RtlCliListProcesses(VOID)
+NTSTATUS RtlCliListProcesses(VOID)
 {
-    PSYSTEM_PROCESS_INFORMATION ModuleInfo;
+    PSYSTEM_PROCESS_INFORMATION ModuleInfo = 0;
     NTSTATUS Status;
     ULONG Size = 0x10000;
 
@@ -294,55 +262,65 @@ RtlCliDumpSysInfo(VOID)
     //
     // Query basic system information
     //
-    Status = NtQuerySystemInformation(SystemBasicInformation,
-                                      &BasicInfo,
-                                      sizeof(BasicInfo),
-                                      NULL);
-    if (!NT_SUCCESS(Status)) return Status;
+    Status = NtQuerySystemInformation(
+        SystemBasicInformation,
+        &BasicInfo,
+        sizeof(BasicInfo),
+        NULL);
+    if (!NT_SUCCESS(Status))
+        return Status;
 
     //
     // Query basic processor information
     //
-    Status = NtQuerySystemInformation(SystemProcessorInformation,
-                                      &ProcInfo,
-                                      sizeof(ProcInfo),
-                                      NULL);
+    Status = NtQuerySystemInformation(
+        SystemProcessorInformation,
+        &ProcInfo,
+        sizeof(ProcInfo),
+        NULL);
+
+    if (!NT_SUCCESS(Status))
+        return Status;
+
+    //
+    // Query basic system information
+    //
+    Status = NtQuerySystemInformation(
+        SystemPerformanceInformation,
+        &PerfInfo,
+        sizeof(PerfInfo),
+        NULL);
+
+    if (!NT_SUCCESS(Status))
+        return Status;
+
+    //
+    // Query basic system information
+    //
+    Status = NtQuerySystemInformation(
+        SystemTimeOfDayInformation,
+        &TimeInfo,
+        sizeof(TimeInfo),
+        NULL);
     if (!NT_SUCCESS(Status)) return Status;
 
     //
     // Query basic system information
     //
-    Status = NtQuerySystemInformation(SystemPerformanceInformation,
-                                      &PerfInfo,
-                                      sizeof(PerfInfo),
-                                      NULL);
-    if (!NT_SUCCESS(Status)) return Status;
-
-    //
-    // Query basic system information
-    //
-    Status = NtQuerySystemInformation(SystemTimeOfDayInformation,
-                                      &TimeInfo,
-                                      sizeof(TimeInfo),
-                                      NULL);
-    if (!NT_SUCCESS(Status)) return Status;
-
-    //
-    // Query basic system information
-    //
-    Status = NtQuerySystemInformation(SystemProcessorPerformanceInformation,
-                                      &ProcPerfInfo,
-                                      sizeof(ProcPerfInfo),
-                                      NULL);
+    Status = NtQuerySystemInformation(
+        SystemProcessorPerformanceInformation,
+        &ProcPerfInfo,
+        sizeof(ProcPerfInfo),
+        NULL);
     if (!NT_SUCCESS(Status)) return Status;
 
     //
     // Query basic system information
     //
     Status = NtQuerySystemInformation(SystemFileCacheInformation,
-                                      &CacheInfo,
-                                      sizeof(CacheInfo),
-                                      NULL);
+        &CacheInfo,
+        sizeof(CacheInfo),
+        NULL);
     if (!NT_SUCCESS(Status)) return Status;
 
     //
@@ -351,41 +329,40 @@ RtlCliDumpSysInfo(VOID)
     //
     RtlTimeToTimeFields(&TimeInfo.BootTime, &BootTime);
     RtlCliDisplayString("Native shell running in %S booted on %02d-%02d-%02d "
-                        "at %02d:%02d. CPUs: %d\n",
-                        SharedData->NtSystemRoot,
-                        BootTime.Day,
-                        BootTime.Month,
-                        BootTime.Year,
-                        BootTime.Hour,
-                        BootTime.Minute,
-                        BasicInfo.NumberOfProcessors);
+        "at %02d:%02d. CPUs: %d\n",
+        SharedData->NtSystemRoot,
+        BootTime.Day,
+        BootTime.Month,
+        BootTime.Year,
+        BootTime.Hour,
+        BootTime.Minute,
+        BasicInfo.NumberOfProcessors);
 
     //
     // Display System Flags
     //
     RtlCliDisplayString("Version: %x.%x. Debug Mode: %x. Safe Mode: %x "
-                        "Product Type: %x. Suite Mask: %x\n",
-                        SharedData->NtMajorVersion,
-                        SharedData->NtMinorVersion,
-                        SharedData->KdDebuggerEnabled,
-                        SharedData->SafeBootMode,
-                        SharedData->NtProductType,
-                        SharedData->SuiteMask);
-    RtlCliDisplayString("-------------------------------------"
-                        "-------------------------------------\n");
+        "Product Type: %x. Suite Mask: %x\n",
+        SharedData->NtMajorVersion,
+        SharedData->NtMinorVersion,
+        SharedData->KdDebuggerEnabled,
+        SharedData->SafeBootMode,
+        SharedData->NtProductType,
+        SharedData->SuiteMask);
+    RtlCliDisplayString("--------------------------------------------------------------------------\n");
 
     //
     // Display CPU Information
     //
     RtlCliDisplayString("[CPU] %s Family %d Model %x Stepping %x. "
-                        "Feature Bits: 0x%X NX: 0x%x\n",
-                        (ProcInfo.ProcessorArchitecture ==
-                         PROCESSOR_ARCHITECTURE_INTEL) ? "x86" : "Unknown",
-                        ProcInfo.ProcessorLevel,
-                        ProcInfo.ProcessorRevision >> 8,
-                        ProcInfo.ProcessorRevision & 0xFF,
-                        ProcInfo.ProcessorFeatureBits,
-                        SharedData->NXSupportPolicy);
+        "Feature Bits: 0x%X NX: 0x%x\n",
+        (ProcInfo.ProcessorArchitecture ==
+            PROCESSOR_ARCHITECTURE_INTEL) ? "x86" : "Unknown",
+        ProcInfo.ProcessorLevel,
+        ProcInfo.ProcessorRevision >> 8,
+        ProcInfo.ProcessorRevision & 0xFF,
+        ProcInfo.ProcessorFeatureBits,
+        SharedData->NXSupportPolicy);
 
     //
     // Display RAM Information
@@ -399,11 +376,11 @@ RtlCliDumpSysInfo(VOID)
     //
     // Display User-Mode Virtual Memory Information
     //
-    RtlCliDisplayString("[USR] User-Mode Range: 0x%08X-0x%X. "
-                        "Allocation Granularity: %dKB\n",
-                        BasicInfo.MinimumUserModeAddress,
-                        BasicInfo.MaximumUserModeAddress,
-                        BasicInfo.AllocationGranularity / 1024);
+    RtlCliDisplayString(
+        "[USR] User-Mode Range: 0x%08X-0x%X. Allocation Granularity: %dKB\n",
+        BasicInfo.MinimumUserModeAddress,
+        BasicInfo.MaximumUserModeAddress,
+        BasicInfo.AllocationGranularity / 1024);
 
     //
     // Display System Virtual Memory Information
@@ -434,28 +411,20 @@ RtlCliDumpSysInfo(VOID)
         // Handle two CPU case by adding all of CPU 2's times into CPU 1's
         // FIXME: This should be improved to support 2+ CPUs later
         //
-        ProcPerfInfo[0].IdleTime.QuadPart +=
-            ProcPerfInfo[1].IdleTime.QuadPart;
-        ProcPerfInfo[0].KernelTime.QuadPart +=
-            ProcPerfInfo[1].KernelTime.QuadPart;
-        ProcPerfInfo[0].UserTime.QuadPart +=
-            ProcPerfInfo[1].UserTime.QuadPart;
-        ProcPerfInfo[0].DpcTime.QuadPart += 
-            ProcPerfInfo[1].DpcTime.QuadPart;
+        ProcPerfInfo[0].IdleTime.QuadPart += ProcPerfInfo[1].IdleTime.QuadPart;
+        ProcPerfInfo[0].KernelTime.QuadPart += ProcPerfInfo[1].KernelTime.QuadPart;
+        ProcPerfInfo[0].UserTime.QuadPart += ProcPerfInfo[1].UserTime.QuadPart;
+        ProcPerfInfo[0].DpcTime.QuadPart += ProcPerfInfo[1].DpcTime.QuadPart;
         ProcPerfInfo[0].InterruptCount += ProcPerfInfo[1].InterruptCount;
     }
 
-    //
     // Convert all 64-bit times into a readable format
-    //
     RtlTimeToTimeFields(&ProcPerfInfo[0].IdleTime, &IdleTime);
     RtlTimeToTimeFields(&ProcPerfInfo[0].KernelTime, &KernelTime);
     RtlTimeToTimeFields(&ProcPerfInfo[0].UserTime, &UserTime);
     RtlTimeToTimeFields(&ProcPerfInfo[0].DpcTime, &DpcTime);
 
-    //
     // Display System Times
-    //
     RtlCliDisplayString("[TIME] Kernel: %02d:%02d:%02d. User: %02d:%02d:%02d. "
                         "DPC: %02d:%02d:%02d. Idle: %02d:%02d:%02d.\n",
                         KernelTime.Hour, KernelTime.Minute, KernelTime.Second,

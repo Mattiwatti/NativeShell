@@ -25,12 +25,12 @@ set DDKBUILDENV=
 :: call %WDKDIR%\bin\setenv.bat %WDKDIR%\ fre AMD64 WNET
 
 :: for DDK 7601:
-call %WDKDIR%\bin\setenv.bat %WDKDIR%\ fre x64 WNET
+call %WDKDIR%\bin\setenv.bat %WDKDIR%\ fre x64 WNET no_oacr
 cd %PROJECT_DIR%
 
 set INCLUDE=%INCLUDE%;%PROJECT_DIR%\ndk;%ACTUAL_RECENTISH_SDK_INCLUDE_DIR_WITH_NO_SAL2_H_IN_IT%
 
-build /c /z /g /w /M 8
+build /c /z /g /w /M 8 /nosqm
 del buildfre_wnet_amd64.log 1>nul 2>&1
 echo.
 endlocal
@@ -40,12 +40,16 @@ setlocal
 echo Building %EXE_NAME%.exe (32-bit) ...
 set DDKBUILDENV=
 
-call %WDKDIR%\bin\setenv.bat %WDKDIR%\ fre WNET
+:: for DDK 3790/6000:
+::call %WDKDIR%\bin\setenv.bat %WDKDIR%\ fre WNET
+
+:: for DDK 7601:
+call %WDKDIR%\bin\setenv.bat %WDKDIR%\ fre WNET no_oacr
 cd %PROJECT_DIR%
 
 set INCLUDE=%INCLUDE%;%PROJECT_DIR%\ndk;%ACTUAL_RECENTISH_SDK_INCLUDE_DIR_WITH_NO_SAL2_H_IN_IT%
 
-build /c /z /g /w /M 8
+build /c /z /g /w /M 8 /nosqm
 del buildfre_wnet_x86.log 1>nul 2>&1
 echo.
 endlocal

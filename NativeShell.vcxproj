@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{2997285E-8B86-4AB5-9D40-1880D23CFBF8}</ProjectGuid>
+    <RootNamespace>NativeShell</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <SpectreMitigation>false</SpectreMitigation>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <SpectreMitigation>false</SpectreMitigation>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <SpectreMitigation>false</SpectreMitigation>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <SpectreMitigation>false</SpectreMitigation>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(Configuration)$(PlatformArchitecture)\</OutDir>
+    <IntDir>$(ProjectDir)obj\$(Configuration)$(PlatformArchitecture)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Dev\WinDDK\7600.16385.1\inc\api;C:\Dev\WinDDK\7600.16385.1\inc\crt;C:\Dev\WinDDK\7600.16385.1\inc\ddk;$(ProjectDir)ndk</IncludePath>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)$(PlatformArchitecture)\</OutDir>
+    <IntDir>$(ProjectDir)obj\$(Configuration)$(PlatformArchitecture)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Dev\WinDDK\7600.16385.1\inc\api;C:\Dev\WinDDK\7600.16385.1\inc\crt;C:\Dev\WinDDK\7600.16385.1\inc\ddk;$(ProjectDir)ndk</IncludePath>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)$(PlatformArchitecture)\</OutDir>
+    <IntDir>$(ProjectDir)obj\$(Configuration)$(PlatformArchitecture)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Dev\WinDDK\7600.16385.1\inc\api;C:\Dev\WinDDK\7600.16385.1\inc\crt;C:\Dev\WinDDK\7600.16385.1\inc\ddk;$(ProjectDir)ndk</IncludePath>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)$(PlatformArchitecture)\</OutDir>
+    <IntDir>$(ProjectDir)obj\$(Configuration)$(PlatformArchitecture)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Dev\WinDDK\7600.16385.1\inc\api;C:\Dev\WinDDK\7600.16385.1\inc\crt;C:\Dev\WinDDK\7600.16385.1\inc\ddk;$(ProjectDir)ndk</IncludePath>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <PreprocessorDefinitions>CONDITION_HANDLING=1;NT_INST=0;NT_UP=0;_NT1X=100;WINNT=1;IN32_LEAN_AND_MEAN=1;DEVL=1;WIN32=100;_WIN32;WINDOWS_ENABLE_CPLUSPLUS;MICROSOFT_WINDOWS_WINBASE_H_DEFINE_INTERLOCKED_CPLUSPLUS_OVERLOADS;WIN32;WINVER=0x0502;_WIN32_WINNT=0x0502;NTDDI_VERSION=0x05020100;_WIN32_IE=0x0800;_X86_;_DEBUG;DBG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
+      <ControlFlowGuard>false</ControlFlowGuard>
+      <AdditionalOptions>/Zc:threadSafeInit- /Gw /Gz /EHs-c- %(AdditionalOptions)</AdditionalOptions>
+      <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <CallingConvention>StdCall</CallingConvention>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>false</ExceptionHandling>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <GuardEHContMetadata>false</GuardEHContMetadata>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <ForcedIncludeFiles>warning.h</ForcedIncludeFiles>
+      <UndefinePreprocessorDefinitions>_MT</UndefinePreprocessorDefinitions>
+      <OmitDefaultLibName>true</OmitDefaultLibName>
+    </ClCompile>
+    <Link>
+      <SubSystem>Native</SubSystem>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <Version>5.1</Version>
+      <MinimumRequiredVersion>5.01</MinimumRequiredVersion>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\x86</AdditionalLibraryDirectories>
+      <EntryPointSymbol>NtProcessStartup</EntryPointSymbol>
+      <AdditionalDependencies>ntdllp_xp.lib;safecrtnt.lib;sehupd.lib;gs_support.obj;secchk.obj</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
+      <AdditionalOptions>/NOVCFEATURE /NOCOFFGRPINFO /PDBALTPATH:%_PDB% /OSVERSION:5.1 %(AdditionalOptions)</AdditionalOptions>
+      <SetChecksum>true</SetChecksum>
+      <MergeSections>_PAGE=PAGE;_TEXT=.text</MergeSections>
+      <StackReserveSize>262144</StackReserveSize>
+      <StackCommitSize>8192</StackCommitSize>
+      <BaseAddress>0x1000000</BaseAddress>
+      <LargeAddressAware>true</LargeAddressAware>
+      <CETCompat>false</CETCompat>
+      <GenerateMapFile>true</GenerateMapFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <PreprocessorDefinitions>CONDITION_HANDLING=1;NT_INST=0;NT_UP=0;_NT1X=100;WINNT=1;IN32_LEAN_AND_MEAN=1;DEVL=1;WIN32=100;_WIN32;WINDOWS_ENABLE_CPLUSPLUS;MICROSOFT_WINDOWS_WINBASE_H_DEFINE_INTERLOCKED_CPLUSPLUS_OVERLOADS;WIN32;WINVER=0x0502;_WIN32_WINNT=0x0502;NTDDI_VERSION=0x05020100;_WIN32_IE=0x0800;_WIN64;_AMD64_;AMD64;_DEBUG;DBG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
+      <ControlFlowGuard>false</ControlFlowGuard>
+      <AdditionalOptions>/Zc:threadSafeInit- /Gw /Gz /EHs-c- %(AdditionalOptions)</AdditionalOptions>
+      <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <CallingConvention>StdCall</CallingConvention>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <ExceptionHandling>false</ExceptionHandling>
+      <StringPooling>true</StringPooling>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <GuardEHContMetadata>false</GuardEHContMetadata>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <ForcedIncludeFiles>warning.h</ForcedIncludeFiles>
+      <UndefinePreprocessorDefinitions>_MT</UndefinePreprocessorDefinitions>
+      <OmitDefaultLibName>true</OmitDefaultLibName>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+    </ClCompile>
+    <Link>
+      <SubSystem>Native</SubSystem>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <Version>5.2</Version>
+      <MinimumRequiredVersion>5.02</MinimumRequiredVersion>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\x64</AdditionalLibraryDirectories>
+      <EntryPointSymbol>NtProcessStartup</EntryPointSymbol>
+      <AdditionalDependencies>ntdllp_xp.lib;safecrtnt.lib;sehupd.lib;gs_support.obj;amdsecgs.obj</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
+      <AdditionalOptions>/NOVCFEATURE /NOCOFFGRPINFO /PDBALTPATH:%_PDB% /OSVERSION:5.2 %(AdditionalOptions)</AdditionalOptions>
+      <SetChecksum>true</SetChecksum>
+      <MergeSections>_PAGE=PAGE;_TEXT=.text</MergeSections>
+      <StackCommitSize>8192</StackCommitSize>
+      <StackReserveSize>524288</StackReserveSize>
+      <BaseAddress>0x100000000</BaseAddress>
+      <LargeAddressAware>true</LargeAddressAware>
+      <CETCompat>false</CETCompat>
+      <GenerateMapFile>true</GenerateMapFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <PreprocessorDefinitions>CONDITION_HANDLING=1;NT_INST=0;NT_UP=0;_NT1X=100;WINNT=1;IN32_LEAN_AND_MEAN=1;DEVL=1;WIN32=100;_WIN32;WINDOWS_ENABLE_CPLUSPLUS;MICROSOFT_WINDOWS_WINBASE_H_DEFINE_INTERLOCKED_CPLUSPLUS_OVERLOADS;WIN32;WINVER=0x0502;_WIN32_WINNT=0x0502;NTDDI_VERSION=0x05020100;_WIN32_IE=0x0800;_X86_;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
+      <ControlFlowGuard>false</ControlFlowGuard>
+      <AdditionalOptions>/Zc:threadSafeInit- /Gw /Gz /EHs-c- %(AdditionalOptions)</AdditionalOptions>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <CallingConvention>StdCall</CallingConvention>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>false</ExceptionHandling>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <GuardEHContMetadata>false</GuardEHContMetadata>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <ForcedIncludeFiles>warning.h</ForcedIncludeFiles>
+      <UndefinePreprocessorDefinitions>_MT</UndefinePreprocessorDefinitions>
+      <OmitDefaultLibName>true</OmitDefaultLibName>
+    </ClCompile>
+    <Link>
+      <SubSystem>Native</SubSystem>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <Version>5.1</Version>
+      <MinimumRequiredVersion>5.01</MinimumRequiredVersion>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\x86</AdditionalLibraryDirectories>
+      <EntryPointSymbol>NtProcessStartup</EntryPointSymbol>
+      <AdditionalDependencies>ntdllp_xp.lib;safecrtnt.lib;sehupd.lib;gs_support.obj;secchk.obj</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
+      <AdditionalOptions>/NOVCFEATURE /NOCOFFGRPINFO /PDBALTPATH:%_PDB% /OSVERSION:5.1 %(AdditionalOptions)</AdditionalOptions>
+      <SetChecksum>true</SetChecksum>
+      <MergeSections>_PAGE=PAGE;_TEXT=.text</MergeSections>
+      <StackReserveSize>262144</StackReserveSize>
+      <StackCommitSize>8192</StackCommitSize>
+      <BaseAddress>0x1000000</BaseAddress>
+      <LargeAddressAware>true</LargeAddressAware>
+      <CETCompat>false</CETCompat>
+      <GenerateMapFile>true</GenerateMapFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <PreprocessorDefinitions>CONDITION_HANDLING=1;NT_INST=0;NT_UP=0;_NT1X=100;WINNT=1;IN32_LEAN_AND_MEAN=1;DEVL=1;WIN32=100;_WIN32;WINDOWS_ENABLE_CPLUSPLUS;MICROSOFT_WINDOWS_WINBASE_H_DEFINE_INTERLOCKED_CPLUSPLUS_OVERLOADS;WIN32;WINVER=0x0502;_WIN32_WINNT=0x0502;NTDDI_VERSION=0x05020100;_WIN32_IE=0x0800;_WIN64;_AMD64_;AMD64;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
+      <ControlFlowGuard>false</ControlFlowGuard>
+      <AdditionalOptions>/Zc:threadSafeInit- /Gw /Gz /EHs-c- %(AdditionalOptions)</AdditionalOptions>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <CallingConvention>StdCall</CallingConvention>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>false</ExceptionHandling>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <GuardEHContMetadata>false</GuardEHContMetadata>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <ForcedIncludeFiles>warning.h</ForcedIncludeFiles>
+      <UndefinePreprocessorDefinitions>_MT</UndefinePreprocessorDefinitions>
+      <OmitDefaultLibName>true</OmitDefaultLibName>
+    </ClCompile>
+    <Link>
+      <SubSystem>Native</SubSystem>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <Version>5.2</Version>
+      <MinimumRequiredVersion>5.02</MinimumRequiredVersion>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\x64</AdditionalLibraryDirectories>
+      <EntryPointSymbol>NtProcessStartup</EntryPointSymbol>
+      <AdditionalDependencies>ntdllp_xp.lib;safecrtnt.lib;sehupd.lib;gs_support.obj;amdsecgs.obj</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
+      <AdditionalOptions>/NOVCFEATURE /NOCOFFGRPINFO /PDBALTPATH:%_PDB% /OSVERSION:5.2 %(AdditionalOptions)</AdditionalOptions>
+      <SetChecksum>true</SetChecksum>
+      <MergeSections>_PAGE=PAGE;_TEXT=.text</MergeSections>
+      <StackCommitSize>8192</StackCommitSize>
+      <StackReserveSize>524288</StackReserveSize>
+      <BaseAddress>0x100000000</BaseAddress>
+      <LargeAddressAware>true</LargeAddressAware>
+      <CETCompat>false</CETCompat>
+      <GenerateMapFile>true</GenerateMapFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="display.c" />
+    <ClCompile Include="file.c" />
+    <ClCompile Include="hardware.c" />
+    <ClCompile Include="input.c" />
+    <ClCompile Include="keytrans.c" />
+    <ClCompile Include="main.c" />
+    <ClCompile Include="ntfile.c" />
+    <ClCompile Include="ntreg.c" />
+    <ClCompile Include="process.c" />
+    <ClCompile Include="shell.c" />
+    <ClCompile Include="sysinfo.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ntfile.h" />
+    <ClInclude Include="ntreg.h" />
+    <ClInclude Include="precomp.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

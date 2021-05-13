@@ -1087,7 +1087,7 @@ typedef struct _REPARSE_DATA_BUFFER {
   ULONG ReparseTag;
   USHORT ReparseDataLength;
   USHORT Reserved;
-  _ANONYMOUS_UNION union {
+  union {
     struct {
       USHORT SubstituteNameOffset;
       USHORT SubstituteNameLength;

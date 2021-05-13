@@ -23,12 +23,18 @@ Revision History:
     Alex Ionescu - Started Implementation - 23-Mar-06
 
 --*/
+#pragma once
+
+#ifndef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #define WIN32_NO_STATUS
 #define NTOS_MODE_USER
 #include <stdio.h>
 #include <stdarg.h>
 #include <excpt.h>
-#include <windef.h>
+#include <WINDEF.H>
 #include <winnt.h>
 #include <ntndk.h>
 #include <ntddkbd.h>
@@ -121,41 +127,29 @@ RtlCliPowerOff(
 //
 // Hardware functions
 //
-NTSTATUS
-RtlCliListHardwareTree(
-    VOID
-);
+NTSTATUS RtlCliListHardwareTree(VOID);
 
 //
 // File functions
 //
-NTSTATUS
-RtlCliListDirectory(
-    VOID
-);
+NTSTATUS RtlCliListDirectory(VOID);
 
-NTSTATUS
-RtlCliSetCurrentDirectory(
-    PCHAR Directory
-);
+NTSTATUS RtlCliSetCurrentDirectory(PCHAR Directory);
 
-ULONG
-RtlCliGetCurrentDirectory(
-    IN OUT PWSTR CurrentDirectory
-);
+ULONG RtlCliGetCurrentDirectory(IN OUT PWSTR CurrentDirectory);
 
 // Keyboard:
 
 HANDLE hKeyboard;
 
 typedef struct _KBD_RECORD {
-  WORD  wVirtualScanCode;
-  DWORD dwControlKeyState;
-  UCHAR AsciiChar;
-  BOOL  bKeyDown;
-} KBD_RECORD, *PKBD_RECORD;
+    WORD  wVirtualScanCode;
+    DWORD dwControlKeyState;
+    UCHAR AsciiChar;
+    BOOL  bKeyDown;
+} KBD_RECORD, * PKBD_RECORD;
 
-void IntTranslateKey(PKEYBOARD_INPUT_DATA InputData, KBD_RECORD *kbd_rec);
+void IntTranslateKey(PKEYBOARD_INPUT_DATA InputData, KBD_RECORD* kbd_rec);
 
 #define RIGHT_ALT_PRESSED     0x0001 // the right alt key is pressed.
 #define LEFT_ALT_PRESSED      0x0002 // the left alt key is pressed.
@@ -169,7 +163,7 @@ void IntTranslateKey(PKEYBOARD_INPUT_DATA InputData, KBD_RECORD *kbd_rec);
 
 // Process:
 
-NTSTATUS CreateNativeProcess(IN PCWSTR file_name, IN PCWSTR cmd_line, OUT PHANDLE hProcess);
+NTSTATUS CreateNativeProcess(IN PWSTR file_name, IN PWSTR cmd_line, OUT PHANDLE hProcess);
 
 #define BUFFER_SIZE 1024
 
@@ -180,8 +174,8 @@ UINT StringToArguments(CHAR *str);
 char *xargv[BUFFER_SIZE];
 unsigned int xargc;
 
-BOOL GetFullPath(IN PCSTR filename, OUT PWSTR out, IN BOOL add_slash);
-BOOL FileExists(PCWSTR fname);
+BOOL GetFullPath(IN PSTR filename, OUT PWSTR out, IN BOOL add_slash);
+BOOL FileExists(PWSTR fname);
 
 // Registry
 
@@ -200,36 +194,35 @@ void FillUnicodeStringWithAnsi(OUT PUNICODE_STRING us, IN PCHAR as);
 //
 //===========================================================
 
-BOOLEAN SetUnicodeString (
-  UNICODE_STRING* pustrRet, 
-  WCHAR* pwszData
-  );
-BOOLEAN 
-  DisplayString (
-  WCHAR* pwszData
-  );
-HANDLE 
-  InitHeapMemory (void);
-BOOLEAN 
-  DeinitHeapMemory (
-  HANDLE hHeap
-  );
-PVOID 
-  kmalloc (
-  HANDLE hHeap, 
-  int nSize 
-  );
-BOOLEAN 
-  kfree ( 
-  HANDLE hHeap, 
-  PVOID pMemory 
-  );
-BOOLEAN 
-  AppendString(
-  WCHAR* pszInput, 
-  WCHAR* pszAppend
-  );
-UINT 
-  GetStringLength(
-  WCHAR* pszInput
-  );
+BOOLEAN SetUnicodeString(
+    UNICODE_STRING* pustrRet,
+    WCHAR* pwszData
+);
+
+BOOLEAN DisplayString(WCHAR* pwszData
+);
+
+HANDLE InitHeapMemory(VOID);
+
+BOOLEAN DeinitHeapMemory(
+    HANDLE hHeap
+);
+
+PVOID kmalloc(
+    HANDLE hHeap,
+    int nSize
+);
+
+BOOLEAN kfree(
+    HANDLE hHeap,
+    PVOID pMemory
+);
+
+BOOLEAN AppendString(
+    WCHAR* pszInput,
+    WCHAR* pszAppend
+);
+
+ULONG GetStringLength(
+    WCHAR* pszInput
+);

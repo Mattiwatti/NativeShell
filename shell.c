@@ -1,9 +1,5 @@
 #include "precomp.h"
 
-// массив, который используется функцией StringToArguments
-char *xargv[BUFFER_SIZE];
-unsigned int xargc;
-
 /*
  *****************************************************************************
  * GetFullPath - Get a full path.
@@ -16,51 +12,58 @@ unsigned int xargc;
  *****************************************************************************
  */
 
-BOOL GetFullPath(IN PCSTR filename, OUT PWSTR out, IN BOOL add_slash)
+BOOL GetFullPath(IN PSTR filename, OUT PWSTR out, IN BOOL add_slash)
 {
-  UNICODE_STRING us;
-  ANSI_STRING as;
-  WCHAR cur_path[MAX_PATH];
-  RtlCliGetCurrentDirectory(cur_path);
+    UNICODE_STRING us;
+    ANSI_STRING as;
+    WCHAR cur_path[MAX_PATH];
 
-  if (NULL == filename || NULL == cur_path || NULL == out)
-  {
-    return FALSE;
-  }
+    RtlCliGetCurrentDirectory(cur_path);
 
-  if ((strlen(filename) > 1) && filename[1] == ':')
-  {
-    RtlInitAnsiString(&as, filename);
-    RtlAnsiStringToUnicodeString(&us, &as, TRUE);
-
-    wcscpy(out, us.Buffer);
-    if (add_slash)
+    if (NULL == filename || NULL == cur_path || NULL == out)
     {
-      wcscat(out, L"\\");
+        return FALSE;
     }
 
-    RtlFreeUnicodeString(&us);
-    RtlFreeAnsiString(&as);
-  } else
-  {
-    RtlInitAnsiString(&as, filename);
-    RtlAnsiStringToUnicodeString(&us, &as, TRUE);
-
-    wcscpy(out, cur_path);
-    if (out[wcslen(out) - 1] != L'\\')
+    if ((strlen(filename) > 1) && filename[1] == ':')
     {
-      wcscat(out, L"\\");
+        RtlInitAnsiString(&as, filename);
+        RtlAnsiStringToUnicodeString(&us, &as, TRUE);
+
+        wcscpy(out, us.Buffer);
+
+        if (add_slash)
+        {
+            wcscat(out, L"\\");
+        }
+
+        RtlFreeUnicodeString(&us);
+        RtlFreeAnsiString(&as);
     }
-    wcscat(out, us.Buffer);
-    if (add_slash)
+    else
     {
-      wcscat(out, L"\\");
+        RtlInitAnsiString(&as, filename);
+        RtlAnsiStringToUnicodeString(&us, &as, TRUE);
+
+        wcscpy(out, cur_path);
+
+        if (out[wcslen(out) - 1] != L'\\')
+        {
+            wcscat(out, L"\\");
+        }
+
+        wcscat(out, us.Buffer);
+
+        if (add_slash)
+        {
+            wcscat(out, L"\\");
+        }
+
+        RtlFreeUnicodeString(&us);
+        RtlFreeAnsiString(&as);
     }
 
-    RtlFreeUnicodeString(&us);
-    RtlFreeAnsiString(&as);
-  }
-  return TRUE;
+    return TRUE;
 }
 
 // Argument processing functions:
@@ -154,7 +157,7 @@ UINT StringToArguments(CHAR *str)
  * fname: File name
 \******************************************************************************/
 
-ULONG GetFileAttributesNt(PCWSTR filename)
+ULONG GetFileAttributesNt(PWSTR filename)
 {
   OBJECT_ATTRIBUTES oa;
   FILE_BASIC_INFORMATION fbi;  
@@ -174,28 +177,29 @@ ULONG GetFileAttributesNt(PCWSTR filename)
  * fFile: Folder
 \******************************************************************************/
 
-BOOL FolderExists(PCWSTR foldername)
+BOOL FolderExists(PWSTR foldername)
 {
-  BOOL retval = FALSE;
-  UNICODE_STRING u_filename, nt_filename;  
-  FILE_BASIC_INFORMATION fbi;
-  OBJECT_ATTRIBUTES oa;
-  NTSTATUS st;   
-   
-  RtlInitUnicodeString(&u_filename, foldername);
-  RtlDosPathNameToNtPathName_U(u_filename.Buffer, &nt_filename, NULL, NULL);
-  RtlFreeUnicodeString(&u_filename);
+    BOOL retval = FALSE;
+    UNICODE_STRING u_filename, nt_filename;
+    FILE_BASIC_INFORMATION fbi;
+    OBJECT_ATTRIBUTES oa;
+    NTSTATUS st;
 
-  InitializeObjectAttributes(&oa, &nt_filename, OBJ_CASE_INSENSITIVE, 0, 0);
-  st = NtQueryAttributesFile(&oa, &fbi);  
-  
-  retval = NT_SUCCESS(st);
+    RtlInitUnicodeString(&u_filename, foldername);
+    RtlDosPathNameToNtPathName_U(u_filename.Buffer, &nt_filename, NULL, NULL);
+    RtlFreeUnicodeString(&u_filename);
 
-  if (retval && (fbi.FileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-  {
-    return TRUE;
-  }
-  return FALSE;
+    InitializeObjectAttributes(&oa, &nt_filename, OBJ_CASE_INSENSITIVE, 0, 0);
+    st = NtQueryAttributesFile(&oa, &fbi);
+
+    retval = NT_SUCCESS(st);
+
+    if (retval && (fbi.FileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+    {
+        return TRUE;
+    }
+
+    return FALSE;
 }
 
 /******************************************************************************\
@@ -203,45 +207,48 @@ BOOL FolderExists(PCWSTR foldername)
  * filename: File name
 \******************************************************************************/
 
-BOOL FileExists(PCWSTR filename)
+BOOL FileExists(PWSTR filename)
 {
-  UNICODE_STRING u_filename, nt_filename;  
-  FILE_BASIC_INFORMATION fbi;
-  OBJECT_ATTRIBUTES oa;
-  NTSTATUS st;   
+    UNICODE_STRING nt_filename;
+    FILE_BASIC_INFORMATION fbi;
+    OBJECT_ATTRIBUTES oa;
+    NTSTATUS st;
 
-  RtlInitUnicodeString(&u_filename, filename);
-  RtlDosPathNameToNtPathName_U(u_filename.Buffer, &nt_filename, NULL, NULL);
-  RtlFreeUnicodeString(&u_filename);
+    RtlDosPathNameToNtPathName_U(filename, &nt_filename, NULL, NULL);
 
-  InitializeObjectAttributes(&oa, &nt_filename, OBJ_CASE_INSENSITIVE, 0, 0);
-  st = NtQueryAttributesFile(&oa, &fbi);
-  
-  return NT_SUCCESS(st);
+    InitializeObjectAttributes(
+        &oa, 
+        &nt_filename, 
+        OBJ_CASE_INSENSITIVE, 
+        0, 
+        0
+        );
+
+    st = NtQueryAttributesFile(&oa, &fbi);
+
+    RtlFreeUnicodeString(&nt_filename);
+
+    return NT_SUCCESS(st);
 }
 
 BOOLEAN DisplayString(WCHAR* pwszData) 
 {
-	UNICODE_STRING ustrData;
-	BOOLEAN bRet;
+    UNICODE_STRING ustrData;
 
-	bRet = SetUnicodeString(&ustrData, pwszData);
+    RtlInitUnicodeString(&ustrData, pwszData);
 
-	if(bRet == FALSE) 
-		return FALSE;
+    NtDisplayString(&ustrData);
 
-	NtDisplayString( &ustrData );
-
-	return TRUE;
+    return TRUE;
 }
 
 BOOLEAN SetUnicodeString(UNICODE_STRING* pustrRet, WCHAR* pwszData)
 {
-	if(pustrRet == NULL || pwszData == NULL) {
-		return FALSE;
-	}
+    if(pustrRet == NULL || pwszData == NULL) {
+        return FALSE;
+    }
 
-	pustrRet->Buffer = pwszData;
+    pustrRet->Buffer = pwszData;
     pustrRet->Length = wcslen( pwszData ) * sizeof(WCHAR);
     pustrRet->MaximumLength = pustrRet->Length + sizeof(WCHAR);
 
@@ -250,96 +257,82 @@ BOOLEAN SetUnicodeString(UNICODE_STRING* pustrRet, WCHAR* pwszData)
 
 HANDLE InitHeapMemory(void)
 {
-	RTL_HEAP_PARAMETERS		sHeapDef;
-	HANDLE									hHeap ;
-
-	// Init Heap Memory
-	memset( &sHeapDef, 0, sizeof( RTL_HEAP_PARAMETERS ));
-    sHeapDef.Length = sizeof( RTL_HEAP_PARAMETERS );
-	hHeap = RtlCreateHeap( HEAP_GROWABLE, NULL, 0x100000, 0x1000, NULL, &sHeapDef );
-
-	return hHeap;
+    return RtlCreateHeap(HEAP_GROWABLE, NULL, 0, 0, NULL, NULL);
 }
 
 BOOLEAN DeinitHeapMemory(HANDLE hHeap)
 {
-	PVOID pRet;
-
-	pRet = RtlDestroyHeap( hHeap );
-	if(pRet == NULL)
-		return TRUE;
-
-	return FALSE;
+    RtlDestroyHeap(hHeap);
+    return TRUE;
 }
 
 PVOID kmalloc ( HANDLE hHeap, int nSize )
 {
-	// if you wanna set new memory to zero, use HEAP_ZERO_MEMORY.
-	PVOID pRet = RtlAllocateHeap( hHeap, 0, nSize );
-
-	return pRet;
+    return RtlAllocateHeap(hHeap, 0, nSize);
 }
 
 BOOLEAN kfree( HANDLE hHeap, PVOID pMemory ) 
 {
-	BOOLEAN bRet = RtlFreeHeap( hHeap, 0,  pMemory );
-
-	return bRet;
+    return RtlFreeHeap(hHeap, 0, pMemory);
 }
 
 
 BOOLEAN AppendString(WCHAR* pszInput, WCHAR* pszAppend)
 {
-	int i, nAppendIndex;
+    int i, nAppendIndex;
 
-	for(i = 0; ; i++){
-		if(pszInput[i] == 0x0000) {
-			break;
-		}
-	}
+    for (i = 0; ; i++) 
+    {
+        if (pszInput[i] == 0x0000) {
+            break;
+        }
+    }
 
-	nAppendIndex = 0;
-	for( ; ; ) {
-		if(pszAppend[nAppendIndex] == 0x0000) {
-			break;
-		}
-		pszInput[i] = pszAppend[nAppendIndex];
+    nAppendIndex = 0;
 
-		nAppendIndex++;
-		i++;
-	}
+    for (;;) 
+    {
+        if (pszAppend[nAppendIndex] == 0x0000) {
+            break;
+        }
+        pszInput[i] = pszAppend[nAppendIndex];
 
-	pszInput[i] = 0x0000; // set end of string.
+        nAppendIndex++;
+        i++;
+    }
 
-	return TRUE;
+    pszInput[i] = 0x0000; // set end of string.
+
+    return TRUE;
 }
 
-UINT GetStringLength(WCHAR* pszInput)
+ULONG GetStringLength(WCHAR* pszInput)
 {
-	int i;
+    ULONG i;
 
-	for(i = 0; ; i++){
-		if(pszInput[i] == 0x0000) {
-			break;
-		}
-	}
+    for (i = 0; ; i++)
+    {
+        if (pszInput[i] == 0x0000)
+        {
+            break;
+        }
+    }
 
-	return i;
+    return i;
 }
 
 // Note: This function allocates memory for "us" variable.
-void FillUnicodeStringWithAnsi(OUT PUNICODE_STRING us, IN PCHAR as)
-{  
-  ANSI_STRING ansi_string;
+VOID FillUnicodeStringWithAnsi(OUT PUNICODE_STRING us, IN PCHAR as)
+{
+    ANSI_STRING ansi_string;
 
-  RtlInitAnsiString(&ansi_string, as);
+    RtlInitAnsiString(&ansi_string, as);
 
-  if (!NT_SUCCESS(RtlAnsiStringToUnicodeString(us, &ansi_string, TRUE)))
-  {
-    RtlCliDisplayString("RtlAnsiStringToUnicodeString() failed\n");
-    return;
-  }
+    if (!NT_SUCCESS(RtlAnsiStringToUnicodeString(us, &ansi_string, TRUE)))
+    {
+        RtlCliDisplayString("RtlAnsiStringToUnicodeString() failed\n");
+        return;
+    }
 
-  RtlFreeAnsiString(&ansi_string);
-  return;
+    RtlFreeAnsiString(&ansi_string);
 }

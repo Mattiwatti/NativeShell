@@ -28,6 +28,8 @@ Revision History:
 
 --*/
 #include "precomp.h"
+#include <stdio.h>
+#include <wchar.h>
 
 WCHAR DisplayBuffer[1024];
 USHORT LinePos = 0;
@@ -51,22 +53,16 @@ NTSTATUS
 RtlCliPrintString(IN PUNICODE_STRING Message)
 {
     ULONG i;
-    NTSTATUS Status;
+    NTSTATUS Status = 0;
 
-    //
     // Loop every character
-    //
     for (i = 0; i < (Message->Length / sizeof(WCHAR)); i++)
     {
-        //
         // Print the character
-        //
         Status = RtlCliPutChar(Message->Buffer[i]);
     }
 
-    //
     // Return status
-    //
     return Status;
 }
 
@@ -83,17 +79,12 @@ RtlCliPrintString(IN PUNICODE_STRING Message)
  * @remarks None.
  *
  *--*/
-NTSTATUS
-RtlCliPutChar(IN WCHAR Char)
+NTSTATUS RtlCliPutChar(IN WCHAR Char)
 {
-    //
     // Initialize the string
-    //
     CharString.Buffer[0] = Char;
 
-    //
     // Check for overflow, or simply update.
-    //
 #if 0
     if (LinePos++ > 80)
     {
@@ -105,35 +96,25 @@ RtlCliPutChar(IN WCHAR Char)
     }
 #endif
 
-    //
     // Make sure that this isn't backspace
-    //
-    if (Char != '\r')
+    if (Char != L'\r')
     {
-        //
         // Check if it's a new line
-        //
-        if (Char == '\n')
+        if (Char == L'\n')
         {
-            //
             // Reset the display buffer
-            //
             LinePos = 0;
             DisplayBuffer[LinePos] = UNICODE_NULL;
         }
         else
         {
-            //
             // Add the character in our buffer
-            //
             DisplayBuffer[LinePos] = Char;
             LinePos++;
         }
     }
 
-    //
     // Print the character
-    //
     return NtDisplayString(&CharString);
 }
 
@@ -150,25 +131,19 @@ RtlCliPutChar(IN WCHAR Char)
  *          two characters.
  *
  *--*/
-NTSTATUS
-RtlClipBackspace(VOID)
+NTSTATUS RtlClipBackspace(VOID)
 {
     UNICODE_STRING BackString;
 
-    //
     // Update the line position
-    //
     LinePos--;
 
-    //
     // Finalize this buffer and make it unicode
-    //
     DisplayBuffer[LinePos] = ANSI_NULL;
+
     RtlInitUnicodeString(&BackString, DisplayBuffer);
 
-    //
     // Display the buffer
-    //
     return NtDisplayString(&BackString);
 }
 
@@ -188,40 +163,40 @@ RtlClipBackspace(VOID)
  * @remarks Documentation for this routine needs to be completed.
  *
  *--*/
-NTSTATUS
-__cdecl
-RtlCliDisplayString(IN PCH Message, ...)
+NTSTATUS __cdecl RtlCliDisplayString(IN PCH Message, ...)
 {
     va_list MessageList;
     PCHAR MessageBuffer;
     UNICODE_STRING MessageString;
     NTSTATUS Status;
+    ULONG n;
 
-    //
-    // Allocate Memory for the String Buffer
-    //
-    MessageBuffer = RtlAllocateHeap(RtlGetProcessHeap(), 0, 512);
+    ////
+    //// Allocate Memory for the String Buffer
+    ////
+    MessageBuffer = RtlAllocateHeap(RtlGetProcessHeap(), HEAP_ZERO_MEMORY, 512);
 
-    //
-    // First, combine the message
-    //
+    ////
+    //// First, combine the message
+    ////
     va_start(MessageList, Message);
-    _vsnprintf(MessageBuffer, 512, Message, MessageList);
+    n = _vsnprintf(MessageBuffer, 512, Message, MessageList); // TODO Matti: dmex commented this out why?
+    MessageBuffer[n] = '\0';
     va_end(MessageList);
 
-    //
-    // Now make it a unicode string
-    //
+    ////
+    //// Now make it a unicode string
+    ////
     RtlCreateUnicodeStringFromAsciiz(&MessageString, MessageBuffer);
 
-    //
-    // Display it on screen
-    //
+    ////
+    //// Display it on screen
+    ////
     Status = RtlCliPrintString(&MessageString);
 
-    //
-    // Free Memory
-    //
+    ////
+    //// Free Memory
+    ////
     RtlFreeHeap(RtlGetProcessHeap(), 0, MessageBuffer);
     RtlFreeUnicodeString(&MessageString);
 

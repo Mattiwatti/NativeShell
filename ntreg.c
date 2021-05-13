@@ -4,112 +4,120 @@
 #include "precomp.h"
 #include "ntreg.h"
 
-WCHAR* NtRegGetRootPath(H_KEY hkRoot) 
+WCHAR* NtRegGetRootPath(H_KEY hkRoot)
 {
-	if (hkRoot == HKEY_LOCAL_MACHINE) {
-		return L"\\Registry\\Machine";
-	} else if (hkRoot == HKEY_CLASSES_ROOT) {
-		return L"\\Registry\\Machine\\SOFTWARE\\Classes";
-	} else if (hkRoot == HKEY_CURRENT_CONFIG) {
-		return L"\\Registry\\Machine\\System\\CurrentControlSet\\Hardware Profiles\\Current";
-	} else if (hkRoot == HKEY_USERS) {
-		return L"\\Registry\\User";
-	}
-	return NULL;
+    if (hkRoot == (H_KEY)HKEY_LOCAL_MACHINE)
+    {
+        return L"\\Registry\\Machine";
+    }
+    else if (hkRoot == (H_KEY)HKEY_CLASSES_ROOT)
+    {
+        return L"\\Registry\\Machine\\SOFTWARE\\Classes";
+    }
+    else if (hkRoot == (H_KEY)HKEY_CURRENT_CONFIG)
+    {
+        return L"\\Registry\\Machine\\System\\CurrentControlSet\\Hardware Profiles\\Current";
+    }
+    else if (hkRoot == (H_KEY)HKEY_USERS)
+    {
+        return L"\\Registry\\User";
+    }
+
+    return NULL;
 }
 
 
 BOOLEAN NtRegOpenKey(HANDLE* phKey, H_KEY hkRoot, WCHAR* pwszSubKey, ACCESS_MASK DesiredAccess)
 {
-	NTSTATUS				nRet = 0;
-	HANDLE					hReg = 0;
-	UNICODE_STRING			ustrKeyName;
-	WCHAR					wszKeyName[4096] = { 0, };
-	WCHAR*					pwszRootKey = NULL;
-	OBJECT_ATTRIBUTES		ObjectAttributes;
-	
-	pwszRootKey = NtRegGetRootPath(hkRoot);
-	if(!pwszRootKey) {
-		return FALSE;
-	}
+    NTSTATUS				nRet = 0;
+    HANDLE					hReg = 0;
+    UNICODE_STRING			ustrKeyName;
+    WCHAR					wszKeyName[4096] = { 0, };
+    WCHAR* pwszRootKey = NULL;
+    OBJECT_ATTRIBUTES		ObjectAttributes;
 
-	// Set RootKey
-	AppendString(wszKeyName, pwszRootKey);
+    pwszRootKey = NtRegGetRootPath(hkRoot);
+    if (!pwszRootKey) {
+        return FALSE;
+    }
 
-	// Set SubKey
-	AppendString(wszKeyName, L"\\");
-	AppendString(wszKeyName, pwszSubKey);
+    // Set RootKey
+    AppendString(wszKeyName, pwszRootKey);
 
-	// Setup Unicode String
-	SetUnicodeString(&ustrKeyName, wszKeyName);
+    // Set SubKey
+    AppendString(wszKeyName, L"\\");
+    AppendString(wszKeyName, pwszSubKey);
 
-	//printf("'%S'\n", ustrKeyName.Buffer);
-	InitializeObjectAttributes(&ObjectAttributes,
-		&ustrKeyName,
-		OBJ_CASE_INSENSITIVE,
-		NULL,
-		NULL);
+    // Setup Unicode String
+    RtlInitUnicodeString(&ustrKeyName, wszKeyName);
 
+    //printf("'%S'\n", ustrKeyName.Buffer);
+    InitializeObjectAttributes(
+        &ObjectAttributes,
+        &ustrKeyName,
+        OBJ_CASE_INSENSITIVE,
+        NULL,
+        NULL);
 
-	nRet = NtOpenKey(phKey,
-		DesiredAccess,
-		&ObjectAttributes);
-	
-	if(!NT_SUCCESS(nRet)) {
-		RtlCliDisplayString("NtOpenKey Error : %X\n", nRet);
-		return FALSE;
-	}
-	return TRUE;
+    nRet = NtOpenKey(
+        phKey,
+        DesiredAccess,
+        &ObjectAttributes
+        );
+
+    if (!NT_SUCCESS(nRet))
+    {
+        RtlCliDisplayString("NtOpenKey Error : %X\n", nRet);
+        return FALSE;
+    }
+
+    return TRUE;
 }
 
 BOOLEAN NtRegWriteValue(HANDLE hKey, WCHAR* pwszValueName, PVOID pData, ULONG uLength, DWORD dwRegType)
 {
-	UNICODE_STRING			ustrValueName;
-	NTSTATUS				nRet;
+    UNICODE_STRING ustrValueName;
+    NTSTATUS nRet;
 
-	SetUnicodeString(&ustrValueName, pwszValueName);
+    RtlInitUnicodeString(&ustrValueName, pwszValueName);
 
-	nRet = NtSetValueKey( hKey, 
-						  &ustrValueName, 
-						  0, 
-						  dwRegType,		// i.e. REG_BINARY
-						  pData, 
-						  uLength);
+    nRet = NtSetValueKey(
+        hKey,
+        &ustrValueName,
+        0,
+        dwRegType,		// i.e. REG_BINARY
+        pData,
+        uLength);
 
-	//printf("NtRegWriteValue : %X\n", nRet);
-	if (!NT_SUCCESS(nRet)) 
-  {
-		return FALSE;
-	}
+    //printf("NtRegWriteValue : %X\n", nRet);
 
-	return TRUE;
+    if (!NT_SUCCESS(nRet))
+    {
+        return FALSE;
+    }
+
+    return TRUE;
 }
 
 BOOLEAN NtRegWriteString(HANDLE hKey, WCHAR* pwszValueName, WCHAR* pwszValue)
 {
-	BOOLEAN bRet = FALSE;
+    BOOLEAN bRet = FALSE;
 
-	bRet = NtRegWriteValue(
-							hKey, pwszValueName, 
-							pwszValue, (GetStringLength(pwszValue) + 1) * sizeof(WCHAR), REG_SZ
-						  );
+    bRet = NtRegWriteValue(
+        hKey, pwszValueName,
+        pwszValue, (GetStringLength(pwszValue) + 1) * sizeof(WCHAR), REG_SZ
+        );
 
-	return bRet;
+    return bRet;
 }
 
 BOOLEAN NtRegDeleteValue(HANDLE hKey, WCHAR* pwszValueName) 
 {
-	UNICODE_STRING ustrValueName;
-	int nRet = 0;
+    UNICODE_STRING ustrValueName;
 
-	SetUnicodeString(&ustrValueName, pwszValueName);
+    RtlInitUnicodeString(&ustrValueName, pwszValueName);
 
-	nRet = NtDeleteValueKey( hKey, &ustrValueName );
-	if(!NT_SUCCESS(nRet)) {
-		return FALSE;
-	}
-
-	return TRUE;
+    return NT_SUCCESS(NtDeleteValueKey(hKey, &ustrValueName));
 }
 
 BOOLEAN NtRegReadValue(HANDLE hKey, HANDLE hHeapHandle, WCHAR* pszValueName, PKEY_VALUE_PARTIAL_INFORMATION* pRetBuffer, ULONG* pRetBufferSize)
@@ -145,19 +153,6 @@ BOOLEAN NtRegReadValue(HANDLE hKey, HANDLE hHeapHandle, WCHAR* pszValueName, PKE
 
 	*pRetBuffer = (PKEY_VALUE_PARTIAL_INFORMATION)pBuffer;
 	*pRetBufferSize = uSize;
-
-	return TRUE;
-}
-
-BOOLEAN NtRegCloseKey(HANDLE hKey)
-{
-	int nRet = 0;
-	
-	nRet = NtClose(hKey);
-
-	if(!NT_SUCCESS(nRet)) {
-		return FALSE;
-	}
 
 	return TRUE;
 }

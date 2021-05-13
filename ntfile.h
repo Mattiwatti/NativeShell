@@ -17,13 +17,11 @@ BOOLEAN NtFileSeekFile(HANDLE hFile, LONGLONG lAmount);
 BOOLEAN NtFileGetFilePosition(HANDLE hFile, LONGLONG* pRetCurrentPosition);
 BOOLEAN NtFileGetFileSize(HANDLE hFile, LONGLONG* pRetFileSize);
 
-BOOLEAN NtFileCloseFile(HANDLE hFile);
-
 BOOLEAN NtFileCopyFile(WCHAR* pszSrc, WCHAR* pszDst);
 
-BOOLEAN NtFileDeleteFile(PCWSTR filename);
-BOOLEAN NtFileCreateDirectory(PCWSTR dirname);
+BOOLEAN NtFileDeleteFile(PWSTR filename);
+BOOLEAN NtFileCreateDirectory(PWSTR dirname);
 
-BOOLEAN NtFileMoveFile(IN LPCWSTR lpExistingFileName, IN LPCWSTR lpNewFileName, BOOLEAN ReplaceIfExists);
+BOOLEAN NtFileMoveFile(IN PWSTR lpExistingFileName, IN PWSTR lpNewFileName, BOOLEAN ReplaceIfExists);
 
 #endif

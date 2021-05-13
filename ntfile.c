@@ -6,102 +6,110 @@
 
 BOOLEAN NtFileOpenDirectory(HANDLE* phRetFile, WCHAR* pwszFileName, BOOLEAN bWrite, BOOLEAN bOverwrite)
 {
-  HANDLE hFile;
-  UNICODE_STRING ustrFileName;
-  IO_STATUS_BLOCK IoStatusBlock;
-  ULONG CreateDisposition = 0;
-  WCHAR wszFileName[1024] = L"\\??\\";
-  OBJECT_ATTRIBUTES ObjectAttributes;
+    HANDLE hFile;
+    UNICODE_STRING ustrFileName;
+    IO_STATUS_BLOCK IoStatusBlock;
+    ULONG CreateDisposition = 0;
+    WCHAR wszFileName[1024] = L"\\??\\";
+    OBJECT_ATTRIBUTES ObjectAttributes;
 
-  wcscat(wszFileName, pwszFileName);
+    wcscat(wszFileName, pwszFileName);
 
-  RtlInitUnicodeString(&ustrFileName, wszFileName);
+    RtlInitUnicodeString(&ustrFileName, wszFileName);
 
-  InitializeObjectAttributes(&ObjectAttributes,
-    &ustrFileName,
-    OBJ_CASE_INSENSITIVE,
-    NULL,
-    NULL);
+    InitializeObjectAttributes(
+        &ObjectAttributes,
+        &ustrFileName,
+        OBJ_CASE_INSENSITIVE,
+        NULL,
+        NULL);
 
-  if (bWrite) 
-  {
-    if (bOverwrite)
+    if (bWrite)
     {
-      CreateDisposition = FILE_OVERWRITE_IF;
-    } 
-    else 
-    {
-      CreateDisposition = FILE_OPEN_IF;
+        if (bOverwrite)
+        {
+            CreateDisposition = FILE_OVERWRITE_IF;
+        }
+        else
+        {
+            CreateDisposition = FILE_OPEN_IF;
+        }
     }
-  } else 
-  {
-    CreateDisposition = FILE_OPEN;
-  }
+    else
+    {
+        CreateDisposition = FILE_OPEN;
+    }
 
-  NtCreateFile(&hFile, 
-    FILE_LIST_DIRECTORY | SYNCHRONIZE | FILE_OPEN_FOR_BACKUP_INTENT, 
-    &ObjectAttributes, 
-    &IoStatusBlock, 
-    0, 
-    FILE_ATTRIBUTE_NORMAL, 
-    FILE_SHARE_READ | FILE_SHARE_WRITE, 
-    FILE_CREATE, 
-    FILE_SYNCHRONOUS_IO_NONALERT | FILE_DIRECTORY_FILE, 
-    NULL, 
-    0); 
+    NtCreateFile(
+        &hFile,
+        FILE_LIST_DIRECTORY | SYNCHRONIZE | FILE_OPEN_FOR_BACKUP_INTENT,
+        &ObjectAttributes,
+        &IoStatusBlock,
+        0,
+        FILE_ATTRIBUTE_NORMAL,
+        FILE_SHARE_READ | FILE_SHARE_WRITE,
+        FILE_CREATE,
+        FILE_SYNCHRONOUS_IO_NONALERT | FILE_DIRECTORY_FILE,
+        NULL,
+        0);
 
-  *phRetFile = hFile;
+    *phRetFile = hFile;
 
-  return TRUE;
+    return TRUE;
 }
 
 BOOLEAN NtFileOpenFile(HANDLE* phRetFile, WCHAR* pwszFileName, BOOLEAN bWrite, BOOLEAN bOverwrite)
 {
-  HANDLE hFile;
-  UNICODE_STRING ustrFileName;
-  IO_STATUS_BLOCK IoStatusBlock;
-  ULONG CreateDisposition = 0;
-  WCHAR wszFileName[1024] = L"\\??\\";
-  OBJECT_ATTRIBUTES ObjectAttributes;
-  NTSTATUS ntStatus;
+    HANDLE hFile;
+    UNICODE_STRING ustrFileName;
+    IO_STATUS_BLOCK IoStatusBlock;
+    ULONG CreateDisposition = 0;
+    WCHAR wszFileName[1024] = L"\\??\\";
+    OBJECT_ATTRIBUTES ObjectAttributes;
+    NTSTATUS ntStatus;
 
-  wcscat(wszFileName, pwszFileName);
+    wcscat(wszFileName, pwszFileName);
 
-  RtlInitUnicodeString(&ustrFileName, wszFileName);
+    RtlInitUnicodeString(&ustrFileName, wszFileName);
 
-  InitializeObjectAttributes(&ObjectAttributes,
-    &ustrFileName,
-    OBJ_CASE_INSENSITIVE,
-    NULL,
-    NULL);
+    InitializeObjectAttributes(
+        &ObjectAttributes,
+        &ustrFileName,
+        OBJ_CASE_INSENSITIVE,
+        NULL,
+        NULL);
 
-  if (bWrite) 
-  {
-    if (bOverwrite)
+    if (bWrite)
     {
-      CreateDisposition = FILE_OVERWRITE_IF;
-    } else
-    {
-      CreateDisposition = FILE_OPEN_IF;
+        if (bOverwrite)
+        {
+            CreateDisposition = FILE_OVERWRITE_IF;
+        }
+        else
+        {
+            CreateDisposition = FILE_OPEN_IF;
+        }
     }
-  } else
-  {
-    CreateDisposition = FILE_OPEN;
-  }
+    else
+    {
+        CreateDisposition = FILE_OPEN;
+    }
 
-  ntStatus = NtCreateFile(&hFile, GENERIC_WRITE|SYNCHRONIZE|GENERIC_READ, 
-    &ObjectAttributes, &IoStatusBlock, 0, FILE_ATTRIBUTE_NORMAL, 0, 
-    CreateDisposition, FILE_SYNCHRONOUS_IO_NONALERT,  NULL, 0); 
+    ntStatus = NtCreateFile(
+        &hFile, 
+        GENERIC_WRITE | SYNCHRONIZE | GENERIC_READ,
+        &ObjectAttributes, &IoStatusBlock, 0, FILE_ATTRIBUTE_NORMAL, 0,
+        CreateDisposition, FILE_SYNCHRONOUS_IO_NONALERT, NULL, 0);
 
-  if (!NT_SUCCESS(ntStatus))
-  {
-    RtlCliDisplayString("NtCreateFile() failed 0x%.8X\n", ntStatus);
-    return FALSE;
-  }
+    if (!NT_SUCCESS(ntStatus))
+    {
+        RtlCliDisplayString("NtCreateFile() failed 0x%.8X\n", ntStatus);
+        return FALSE;
+    }
 
-  *phRetFile = hFile;
+    *phRetFile = hFile;
 
-  return TRUE;
+    return TRUE;
 }
 
 BOOLEAN NtFileWriteFile(HANDLE hFile, LPVOID lpData, DWORD dwBufferSize, DWORD* pRetWrittenSize)
@@ -127,74 +135,75 @@ BOOLEAN NtFileWriteFile(HANDLE hFile, LPVOID lpData, DWORD dwBufferSize, DWORD* 
 
 BOOLEAN NtFileCopyFile(WCHAR* pszSrc, WCHAR* pszDst)
 {
-  HANDLE hSrc = NULL;
-  HANDLE hDst = NULL;
-  BYTE byData[8192];
-  LONGLONG lFileSize = 0;
-  LONGLONG lWrittenSizeTotal = 0;
-  DWORD dwReadedSize = 0;
-  DWORD dwWrittenSize = 0;
-  BOOLEAN bResult = 0;
+    HANDLE hSrc = NULL;
+    HANDLE hDst = NULL;
+    BYTE byData[8192];
+    LONGLONG lFileSize = 0;
+    LONGLONG lWrittenSizeTotal = 0;
+    DWORD dwReadedSize = 0;
+    DWORD dwWrittenSize = 0;
+    BOOLEAN bResult = 0;
 
-  bResult = NtFileOpenFile(&hSrc, pszSrc, FALSE, FALSE);
-  if (bResult == FALSE) 
-  {
-    return FALSE;
-  }
-
-  bResult = NtFileOpenFile(&hDst, pszDst, TRUE, TRUE);
-
-  if (bResult == FALSE) 
-  {
-    NtFileCloseFile( hSrc );
-    return FALSE;
-  }
-
-  if (NtFileGetFileSize(hSrc, &lFileSize) == FALSE) 
-  {
-    NtFileCloseFile( hSrc );
-    NtFileCloseFile( hDst );
-    return FALSE;
-  }
-
-  lWrittenSizeTotal = 0;
-  while (1) 
-  {
-    dwReadedSize = 0;
-
-    if (NtFileReadFile(hSrc, byData, 8192, &dwReadedSize) == FALSE) 
+    bResult = NtFileOpenFile(&hSrc, pszSrc, FALSE, FALSE);
+    if (bResult == FALSE)
     {
-      NtFileCloseFile( hSrc );
-      NtFileCloseFile( hDst );
-      return FALSE;
+        return FALSE;
     }
 
-    if (NtFileWriteFile(hDst, byData, dwReadedSize, &dwWrittenSize) == FALSE) 
+    bResult = NtFileOpenFile(&hDst, pszDst, TRUE, TRUE);
+
+    if (bResult == FALSE)
     {
-      NtFileCloseFile( hSrc );
-      NtFileCloseFile( hDst );
-      return FALSE;
+        NtClose(hSrc);
+        return FALSE;
     }
 
-    if (dwReadedSize != dwWrittenSize) 
+    if (NtFileGetFileSize(hSrc, &lFileSize) == FALSE)
     {
-      NtFileCloseFile( hSrc );
-      NtFileCloseFile( hDst );
-      return FALSE;
+        NtClose(hSrc);
+        NtClose(hDst);
+        return FALSE;
     }
 
-    lWrittenSizeTotal += dwWrittenSize;
-    if (lWrittenSizeTotal == lFileSize)
+    lWrittenSizeTotal = 0;
+
+    while (1)
     {
-      // End of File...
-      break;
+        dwReadedSize = 0;
+
+        if (NtFileReadFile(hSrc, byData, 8192, &dwReadedSize) == FALSE)
+        {
+            NtClose(hSrc);
+            NtClose(hDst);
+            return FALSE;
+        }
+
+        if (NtFileWriteFile(hDst, byData, dwReadedSize, &dwWrittenSize) == FALSE)
+        {
+            NtClose(hSrc);
+            NtClose(hDst);
+            return FALSE;
+        }
+
+        if (dwReadedSize != dwWrittenSize)
+        {
+            NtClose(hSrc);
+            NtClose(hDst);
+            return FALSE;
+        }
+
+        lWrittenSizeTotal += dwWrittenSize;
+        if (lWrittenSizeTotal == lFileSize)
+        {
+            // End of File...
+            break;
+        }
     }
-  }
 
-  NtFileCloseFile( hSrc );
-  NtFileCloseFile( hDst );
+    NtClose(hSrc);
+    NtClose(hDst);
 
-  return TRUE;
+    return TRUE;
 }
 
 BOOLEAN NtFileReadFile(HANDLE hFile, LPVOID pOutBuffer, DWORD dwOutBufferSize, DWORD* pRetReadedSize)
@@ -281,91 +290,78 @@ BOOLEAN NtFileSeekFile(HANDLE hFile, LONGLONG lAmount)
   return FALSE;
 }
 
-BOOLEAN NtFileCloseFile(HANDLE hFile)
-{
-  NTSTATUS ntStatus = 0;
-
-  ntStatus = NtClose(hFile);
-
-  if (ntStatus == STATUS_SUCCESS)
-  {
-    return TRUE;
-  }
-
-  return FALSE;
-}
-
 // filename - full path in DOS format
-BOOLEAN NtFileDeleteFile(PCWSTR filename)
+BOOLEAN NtFileDeleteFile(PWSTR filename)
 {
-  UNICODE_STRING us;
-  NTSTATUS status;
-  OBJECT_ATTRIBUTES oa;
+    UNICODE_STRING us;
+    NTSTATUS status;
+    OBJECT_ATTRIBUTES oa;
 
-  RtlInitUnicodeString(&us, filename);
+    if (!RtlDosPathNameToNtPathName_U(filename, &us, NULL, NULL))
+    {
+        return FALSE;
+    }
 
-  if (!RtlDosPathNameToNtPathName_U(filename, &us, NULL, NULL))
-  {
-    return FALSE;
-  }
+    InitializeObjectAttributes(
+        &oa,
+        &us,
+        OBJ_CASE_INSENSITIVE,
+        NULL,
+        NULL
+        );
 
-  InitializeObjectAttributes(&oa, &us, OBJ_CASE_INSENSITIVE, NULL, NULL);
-  status = NtDeleteFile(&oa);
+    status = NtDeleteFile(&oa);
 
-  if (!NT_SUCCESS(status))
-  {    
     RtlFreeUnicodeString(&us);
-    return FALSE;
-  }
 
-  RtlFreeUnicodeString(&us);
-  return TRUE;
+    return NT_SUCCESS(status);
 }
 
-BOOLEAN NtFileCreateDirectory(PCWSTR dirname)
+BOOLEAN NtFileCreateDirectory(PWSTR dirname)
 {
-  UNICODE_STRING us;
-  NTSTATUS status;
-  HANDLE hFile;
-  OBJECT_ATTRIBUTES oa;
-  IO_STATUS_BLOCK iosb;
+    UNICODE_STRING us;
+    NTSTATUS status;
+    HANDLE hFile;
+    OBJECT_ATTRIBUTES oa;
+    IO_STATUS_BLOCK iosb;
 
-  if (!RtlDosPathNameToNtPathName_U(dirname, &us, NULL, NULL))
-  {
-    return FALSE;
-  }
+    if (!RtlDosPathNameToNtPathName_U(dirname, &us, NULL, NULL))
+    {
+        return FALSE;
+    }
 
-  InitializeObjectAttributes(&oa,&us,OBJ_CASE_INSENSITIVE,NULL,NULL);
+    InitializeObjectAttributes(&oa, &us, OBJ_CASE_INSENSITIVE, NULL, NULL);
 
-  status = NtCreateFile(&hFile,
-    FILE_LIST_DIRECTORY | SYNCHRONIZE | FILE_OPEN_FOR_BACKUP_INTENT,
-    &oa,
-    &iosb,
-    NULL,
-    FILE_ATTRIBUTE_NORMAL,
-    FILE_SHARE_READ | FILE_SHARE_WRITE,
-    FILE_CREATE,
-    FILE_SYNCHRONOUS_IO_NONALERT | FILE_DIRECTORY_FILE,
-    NULL,
-    0
+    status = NtCreateFile(
+        &hFile,
+        FILE_LIST_DIRECTORY | SYNCHRONIZE | FILE_OPEN_FOR_BACKUP_INTENT,
+        &oa,
+        &iosb,
+        NULL,
+        FILE_ATTRIBUTE_NORMAL,
+        FILE_SHARE_READ | FILE_SHARE_WRITE,
+        FILE_CREATE,
+        FILE_SYNCHRONOUS_IO_NONALERT | FILE_DIRECTORY_FILE,
+        NULL,
+        0
     );
 
-  if (NT_SUCCESS(status))
-  {
-    NtClose(hFile);
-    RtlFreeUnicodeString(&us);
-    return TRUE;
-  }
+    if (NT_SUCCESS(status))
+    {
+        NtClose(hFile);
+        RtlFreeUnicodeString(&us);
+        return TRUE;
+    }
 
-  /* if it already exists then return success */
-  if (status == STATUS_OBJECT_NAME_COLLISION) 
-  {
-    RtlFreeUnicodeString(&us);
-    return TRUE;
-  }
+    /* if it already exists then return success */
+    if (status == STATUS_OBJECT_NAME_COLLISION)
+    {
+        RtlFreeUnicodeString(&us);
+        return TRUE;
+    }
 
-  RtlFreeUnicodeString(&us);
-  return FALSE;
+    RtlFreeUnicodeString(&us);
+    return FALSE;
 }
 
 /*
@@ -373,87 +369,87 @@ lpExistingFileName - full path in DOS format
 lpNewFileName - full path in DOS format, or filename
 */
 
-BOOLEAN NtFileMoveFile(IN LPCWSTR lpExistingFileName, IN LPCWSTR lpNewFileName, BOOLEAN ReplaceIfExists)
+BOOLEAN NtFileMoveFile(IN PWSTR lpExistingFileName, IN PWSTR lpNewFileName, BOOLEAN ReplaceIfExists)
 {
-  PFILE_RENAME_INFORMATION FileRenameInfo;
-  OBJECT_ATTRIBUTES ObjectAttributes;
-  IO_STATUS_BLOCK IoStatusBlock;
-  UNICODE_STRING ExistingFileNameU;
-  WCHAR NewFileName[MAX_PATH] = L"\\??\\";
-  HANDLE FileHandle;
-  DWORD FileNameSize;
+    PFILE_RENAME_INFORMATION FileRenameInfo;
+    OBJECT_ATTRIBUTES ObjectAttributes;
+    IO_STATUS_BLOCK IoStatusBlock;
+    UNICODE_STRING ExistingFileNameU;
+    WCHAR NewFileName[MAX_PATH] = L"\\??\\";
+    HANDLE FileHandle;
+    DWORD FileNameSize;
 
-  NTSTATUS Status;
+    NTSTATUS Status;
 
-  if ( !lpExistingFileName || !lpNewFileName )
-  {
-    return FALSE;
-  }
+    if (!lpExistingFileName || !lpNewFileName)
+    {
+        return FALSE;
+    }
 
-  RtlDosPathNameToNtPathName_U(lpExistingFileName, &ExistingFileNameU, NULL, NULL);
+    RtlDosPathNameToNtPathName_U(lpExistingFileName, &ExistingFileNameU, NULL, NULL);
 
-  if ((wcslen(lpNewFileName) > 2) && L':' == lpNewFileName[1])
-  {
-    wcsncat(NewFileName, lpNewFileName, MAX_PATH);
-  }
-  else
-  {
-    wcsncpy(NewFileName, lpNewFileName, MAX_PATH);
-  }
+    if ((wcslen(lpNewFileName) > 2) && L':' == lpNewFileName[1])
+    {
+        wcsncat(NewFileName, lpNewFileName, MAX_PATH);
+    }
+    else
+    {
+        wcsncpy(NewFileName, lpNewFileName, MAX_PATH);
+    }
 
-  RtlCliDisplayString("NtFileMoveFile (%S, %S)\n", ExistingFileNameU.Buffer, NewFileName);
+    RtlCliDisplayString("NtFileMoveFile (%S, %S)\n", ExistingFileNameU.Buffer, NewFileName);
 
-  InitializeObjectAttributes(&ObjectAttributes,
-    &ExistingFileNameU,
-    OBJ_CASE_INSENSITIVE,
-    NULL,
-    NULL);
+    InitializeObjectAttributes(
+        &ObjectAttributes,
+        &ExistingFileNameU,
+        OBJ_CASE_INSENSITIVE,
+        NULL,
+        NULL);
 
-  Status = NtCreateFile (&FileHandle,
-    FILE_ALL_ACCESS,
-    &ObjectAttributes,
-    &IoStatusBlock,
-    NULL,
-    FILE_ATTRIBUTE_NORMAL,
-    FILE_SHARE_READ | FILE_SHARE_WRITE,
-    FILE_OPEN,
-    FILE_SYNCHRONOUS_IO_NONALERT,
-    NULL,
-    0);
+    Status = NtCreateFile(
+        &FileHandle,
+        FILE_ALL_ACCESS,
+        &ObjectAttributes,
+        &IoStatusBlock,
+        NULL,
+        FILE_ATTRIBUTE_NORMAL,
+        FILE_SHARE_READ | FILE_SHARE_WRITE,
+        FILE_OPEN,
+        FILE_SYNCHRONOUS_IO_NONALERT,
+        NULL,
+        0);
 
-  if ( !NT_SUCCESS(Status) ) 
-  {
-    RtlCliDisplayString("NtCreateFile() failed (Status %lx)\n", Status);
-    return FALSE;
-  }
+    if (!NT_SUCCESS(Status))
+    {
+        RtlCliDisplayString("NtCreateFile() failed (Status %lx)\n", Status);
+        return FALSE;
+    }
 
-  FileNameSize = wcslen(NewFileName) * sizeof(*NewFileName);
+    FileNameSize = (ULONG)wcslen(NewFileName) * sizeof(*NewFileName);
+    FileRenameInfo = RtlAllocateHeap(RtlGetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(FILE_RENAME_INFORMATION) + FileNameSize);
 
-  FileRenameInfo = RtlAllocateHeap(RtlGetProcessHeap(),
-    HEAP_ZERO_MEMORY, sizeof(FILE_RENAME_INFORMATION) + FileNameSize);
+    if (!FileRenameInfo)
+    {
+        RtlCliDisplayString("RtlAllocateHeap failed\n");
+        NtClose(FileHandle);
+        return FALSE;
+    }
 
-  if ( !FileRenameInfo )
-  {
-    RtlCliDisplayString("RtlAllocateHeap failed\n");
+    FileRenameInfo->RootDirectory = NULL;
+    FileRenameInfo->ReplaceIfExists = ReplaceIfExists;
+    FileRenameInfo->FileNameLength = FileNameSize;
+    RtlCopyMemory(FileRenameInfo->FileName, NewFileName, FileNameSize);
+
+    Status = NtSetInformationFile(
+      FileHandle,
+      &IoStatusBlock,
+      FileRenameInfo,
+      sizeof(FILE_RENAME_INFORMATION)+FileNameSize,
+      FileRenameInformation );
+
+    RtlFreeHeap(RtlGetProcessHeap(), 0, FileRenameInfo);
+
     NtClose(FileHandle);
-    return FALSE;
-  }
 
-  FileRenameInfo->RootDirectory = NULL;
-  FileRenameInfo->ReplaceIfExists = ReplaceIfExists;
-  FileRenameInfo->FileNameLength = FileNameSize;
-  RtlCopyMemory(FileRenameInfo->FileName, NewFileName, FileNameSize);
-
-  Status = NtSetInformationFile(
-    FileHandle,
-    &IoStatusBlock,
-    FileRenameInfo,
-    sizeof(FILE_RENAME_INFORMATION)+FileNameSize,
-    FileRenameInformation );
-
-  RtlFreeHeap(RtlGetProcessHeap(), 0, FileRenameInfo);
-
-  NtClose(FileHandle);
-
-  return TRUE;
+    return TRUE;
 }
