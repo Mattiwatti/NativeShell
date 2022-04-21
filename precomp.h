@@ -61,6 +61,13 @@ Revision History:
 #define PRINTF_ATTR(FormatIndex, FirstToCheck)
 #endif
 
+#if defined(__RESHARPER__)
+#define WPRINTF_ATTR(FormatIndex, FirstToCheck) \
+	[[rscpp::format(wprintf, FormatIndex, FirstToCheck)]]
+#else
+#define WPRINTF_ATTR(FormatIndex, FirstToCheck)
+#endif
+
 //
 // Device type for input/output
 //
@@ -258,18 +265,20 @@ ULONG GetStringLength(
 // TEMP: missing CRT and misc. other stuff
 //
 
-NTSYSAPI int __CRTDECL sprintf(
+PRINTF_ATTR(2, 3)
+NTSYSAPI int __cdecl sprintf(
     _Pre_notnull_ _Always_(_Post_z_) char* const _Buffer,
     _In_z_ _Printf_format_string_    char const* const _Format,
     ...);
 
-NTSYSAPI int __CRTDECL swprintf(
+WPRINTF_ATTR(2, 3)
+NTSYSAPI int __cdecl swprintf(
     _Out_writes_opt_(_BufferCount) _Always_(_Post_z_) wchar_t* const _Buffer,
     _In_ size_t const _BufferCount,
     _In_z_ _Printf_format_string_ wchar_t const* const _Format,
     ...);
 
-NTSYSAPI int __CRTDECL _vsnprintf(
+NTSYSAPI int __cdecl _vsnprintf(
     char* buffer,
     size_t count,
     const char* format,

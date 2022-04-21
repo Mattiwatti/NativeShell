@@ -108,15 +108,15 @@ VOID RtlCliDumpFileInfo(PFILE_BOTH_DIR_INFORMATION DirInfo)
     PWCHAR Null;
     WCHAR Save;
     TIME_FIELDS Time;
-    CHAR SizeString[16];
+    WCHAR SizeString[16];
     WCHAR ShortString[12 + 1];
     WCHAR FileString[MAX_PATH + 1];
 
     WCHAR FileStringSize[100];
     WCHAR ShortStringSize[100];
 
-    UINT file_size = 0;
-    UINT short_size = 0;
+    UINT file_size;
+    UINT short_size;
 
     //
     // The filename isn't null-terminated, and the next structure follows
@@ -133,13 +133,10 @@ VOID RtlCliDumpFileInfo(PFILE_BOTH_DIR_INFORMATION DirInfo)
     RtlTimeToTimeFields(&DirInfo->CreationTime, &Time);
 
     // Don't display sizes for directories
+    RtlZeroMemory(SizeString, sizeof(SizeString));
     if (!(DirInfo->FileAttributes & FILE_ATTRIBUTE_DIRECTORY))
     {
-        sprintf(SizeString, "%ld", DirInfo->AllocationSize.LowPart);
-    }
-    else
-    {
-        strcat(SizeString, " ");
+        swprintf(SizeString, ARRAYSIZE(SizeString) - 1, L"%lu", DirInfo->AllocationSize.LowPart);
     }
 
     //
@@ -151,42 +148,43 @@ VOID RtlCliDumpFileInfo(PFILE_BOTH_DIR_INFORMATION DirInfo)
     file_size = DirInfo->FileNameLength / sizeof(WCHAR);
     short_size = DirInfo->ShortNameLength / sizeof(WCHAR);
 
-    swprintf(ShortStringSize, sizeof(ShortStringSize), L"%d", short_size);
-    swprintf(FileStringSize, sizeof(ShortStringSize), L"%d", file_size);
+    RtlZeroMemory(ShortStringSize, sizeof(ShortStringSize));
+    swprintf(ShortStringSize, ARRAYSIZE(ShortStringSize) - 1, L"%lu", short_size);
+    RtlZeroMemory(FileStringSize, sizeof(FileStringSize));
+    swprintf(FileStringSize, ARRAYSIZE(FileStringSize) - 1, L"%lu", file_size);
 
+    RtlZeroMemory(ShortString, sizeof(ShortString));
     if (DirInfo->ShortNameLength)
     {
-        memset(ShortString, 0x00, (12 + 1) * sizeof(WCHAR));
         wcsncpy(ShortString, DirInfo->ShortName, short_size);
     }
     else
     {
-        swprintf(ShortString, sizeof(ShortString), L" ");
+        wcsncpy(ShortString, L" ", ARRAYSIZE(L" ") - 1);
     }
-
+	
+    RtlZeroMemory(FileString, sizeof(FileString));
     if (DirInfo->FileNameLength)
     {
-        memset(FileString, 0x00, (MAX_PATH + 1) * sizeof(WCHAR));
         wcsncpy(FileString, DirInfo->FileName, file_size);
     }
     else
     {
-        swprintf(FileString, sizeof(ShortString), L" ");
+        wcsncpy(FileString, L" ", ARRAYSIZE(L" ") - 1);
     }
 
     RtlCliDisplayString(
-        "%02d.%02d.%04d %02d:%02d %s %9s %-28S %12S\n",
+        "%02d.%02d.%04d %02d:%02d %hs %9ls %-28ls %12ls\n",
         Time.Day,
         Time.Month,
         Time.Year,
         Time.Hour,
         Time.Minute,
-        DirInfo->FileAttributes & FILE_ATTRIBUTE_DIRECTORY ?
+        (DirInfo->FileAttributes & FILE_ATTRIBUTE_DIRECTORY) ?
         "<DIR>" : "     ",
         SizeString,
         FileString,
         ShortString);
-
 
     //
     // Restore the character that was here before
