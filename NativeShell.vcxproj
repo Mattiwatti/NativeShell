@@ -110,7 +110,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <ControlFlowGuard>false</ControlFlowGuard>
-      <AdditionalOptions>/cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- /kernel %(AdditionalOptions)</AdditionalOptions>
       <ConformanceMode>true</ConformanceMode>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CallingConvention>StdCall</CallingConvention>
@@ -127,6 +127,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ExceptionHandling>false</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Native</SubSystem>
@@ -137,15 +138,14 @@
       <MinimumRequiredVersion>5.01</MinimumRequiredVersion>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\x86</AdditionalLibraryDirectories>
       <EntryPointSymbol>NtProcessStartup</EntryPointSymbol>
-      <AdditionalDependencies>ntdllp_xp.lib;safecrtnt.lib;sehupd.lib;gs_support.obj;secchk.obj</AdditionalDependencies>
+      <AdditionalDependencies>ntdllp_xp.lib;libcntpr.lib;sehupd.lib;gs_support.obj;secchk.obj</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
       <AdditionalOptions>/NOVCFEATURE /NOCOFFGRPINFO /PDBALTPATH:%_PDB% /OSVERSION:5.1 %(AdditionalOptions)</AdditionalOptions>
       <SetChecksum>true</SetChecksum>
       <MergeSections>_PAGE=PAGE;_TEXT=.text</MergeSections>
-      <BaseAddress>0x1000000</BaseAddress>
       <LargeAddressAware>true</LargeAddressAware>
-      <CETCompat>false</CETCompat>
+      <CETCompat>true</CETCompat>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
   </ItemDefinitionGroup>
@@ -158,7 +158,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <ControlFlowGuard>false</ControlFlowGuard>
-      <AdditionalOptions>/cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- /kernel %(AdditionalOptions)</AdditionalOptions>
       <ConformanceMode>true</ConformanceMode>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CallingConvention>StdCall</CallingConvention>
@@ -167,7 +167,7 @@
       <StringPooling>true</StringPooling>
       <BufferSecurityCheck>true</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <GuardEHContMetadata>false</GuardEHContMetadata>
+      <GuardEHContMetadata>true</GuardEHContMetadata>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <UndefinePreprocessorDefinitions>_MT</UndefinePreprocessorDefinitions>
       <OmitDefaultLibName>true</OmitDefaultLibName>
@@ -175,6 +175,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ExceptionHandling>false</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Native</SubSystem>
@@ -185,14 +186,13 @@
       <MinimumRequiredVersion>5.02</MinimumRequiredVersion>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\x64</AdditionalLibraryDirectories>
       <EntryPointSymbol>NtProcessStartup</EntryPointSymbol>
-      <AdditionalDependencies>ntdllp_xp.lib;safecrtnt.lib;sehupd.lib;gs_support.obj;amdsecgs.obj</AdditionalDependencies>
+      <AdditionalDependencies>ntdllp_xp.lib;libcntpr.lib;sehupd.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
-      <AdditionalOptions>/NOVCFEATURE /NOCOFFGRPINFO /PDBALTPATH:%_PDB% /OSVERSION:5.2 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/NOVCFEATURE /NOCOFFGRPINFO /PDBALTPATH:%_PDB% /OSVERSION:5.2 /LoadTimeFuncSelect %(AdditionalOptions)</AdditionalOptions>
       <SetChecksum>true</SetChecksum>
       <MergeSections>_PAGE=PAGE;_TEXT=.text</MergeSections>
-      <BaseAddress>0x100000000</BaseAddress>
-      <CETCompat>false</CETCompat>
+      <CETCompat>true</CETCompat>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
   </ItemDefinitionGroup>
@@ -205,7 +205,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <ControlFlowGuard>false</ControlFlowGuard>
-      <AdditionalOptions>/cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/FUNCOVERRIDE /cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- /kernel %(AdditionalOptions)</AdditionalOptions>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <ConformanceMode>true</ConformanceMode>
@@ -222,6 +222,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ExceptionHandling>false</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Native</SubSystem>
@@ -233,15 +234,14 @@
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\x86</AdditionalLibraryDirectories>
       <EntryPointSymbol>NtProcessStartup</EntryPointSymbol>
-      <AdditionalDependencies>ntdllp_xp.lib;safecrtnt.lib;sehupd.lib;gs_support.obj;secchk.obj</AdditionalDependencies>
+      <AdditionalDependencies>ntdllp_xp.lib;libcntpr.lib;</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
       <AdditionalOptions>/NOVCFEATURE /NOCOFFGRPINFO /PDBALTPATH:%_PDB% /OSVERSION:5.1 %(AdditionalOptions)</AdditionalOptions>
       <SetChecksum>true</SetChecksum>
       <MergeSections>_PAGE=PAGE;_TEXT=.text</MergeSections>
-      <BaseAddress>0x1000000</BaseAddress>
       <LargeAddressAware>true</LargeAddressAware>
-      <CETCompat>false</CETCompat>
+      <CETCompat>true</CETCompat>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
   </ItemDefinitionGroup>
@@ -254,7 +254,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <ControlFlowGuard>false</ControlFlowGuard>
-      <AdditionalOptions>/cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/FUNCOVERRIDE /cbstring /Zc:threadSafeInit- /Zc:preprocessor- /Gw /EHs-c- /kernel %(AdditionalOptions)</AdditionalOptions>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <ConformanceMode>true</ConformanceMode>
@@ -263,7 +263,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <StringPooling>true</StringPooling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <GuardEHContMetadata>false</GuardEHContMetadata>
+      <GuardEHContMetadata>true</GuardEHContMetadata>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ForcedIncludeFiles>warning.h</ForcedIncludeFiles>
       <UndefinePreprocessorDefinitions>_MT</UndefinePreprocessorDefinitions>
@@ -271,6 +271,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ExceptionHandling>false</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Native</SubSystem>
@@ -282,14 +283,13 @@
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\x64</AdditionalLibraryDirectories>
       <EntryPointSymbol>NtProcessStartup</EntryPointSymbol>
-      <AdditionalDependencies>ntdllp_xp.lib;safecrtnt.lib;sehupd.lib;gs_support.obj;amdsecgs.obj</AdditionalDependencies>
+      <AdditionalDependencies>ntdllp_xp.lib;libcntpr.lib;</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
-      <AdditionalOptions>/NOVCFEATURE /NOCOFFGRPINFO /PDBALTPATH:%_PDB% /OSVERSION:5.2 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/NOVCFEATURE /NOCOFFGRPINFO /PDBALTPATH:%_PDB% /OSVERSION:5.2 /LoadTimeFuncSelect %(AdditionalOptions)</AdditionalOptions>
       <SetChecksum>true</SetChecksum>
       <MergeSections>_PAGE=PAGE;_TEXT=.text</MergeSections>
-      <BaseAddress>0x100000000</BaseAddress>
-      <CETCompat>false</CETCompat>
+      <CETCompat>true</CETCompat>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
   </ItemDefinitionGroup>
@@ -299,6 +299,7 @@
     <ClCompile Include="hardware.c" />
     <ClCompile Include="input.c" />
     <ClCompile Include="keytrans.c" />
+    <ClCompile Include="loadcfg.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="ntfile.c" />
     <ClCompile Include="ntreg.c" />

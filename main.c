@@ -432,7 +432,7 @@ NTSTATUS NTAPI NtProcessStartup(PPEB Context)
     //
     // Show banner
     RtlCliDisplayString("Native Shell [Version 1.0.0.0] (" __DATE__ " " __TIME__ ")\n");
-    RtlCliDisplayString("(C) Copyright 2010-2011 amdf\n");
+    RtlCliDisplayString("(C) Copyright 2010-2011 amdf, 2021-2024 Matti\n");
     RtlCliDisplayString("(C) Copyright 2006 TinyKRNL Project\n\n");
     RtlCliDisplayString("Type \"help\".\n\n");
 

@@ -48,6 +48,9 @@
     <ClCompile Include="sysinfo.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="loadcfg.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ntfile.h">

@@ -2,25 +2,25 @@
 
 Copyright (c) Alex Ionescu.  All rights reserved.
 
-    THIS CODE AND INFORMATION IS PROVIDED UNDER THE LESSER GNU PUBLIC LICENSE.
-    PLEASE READ THE FILE "COPYING" IN THE TOP LEVEL DIRECTORY.
+	THIS CODE AND INFORMATION IS PROVIDED UNDER THE LESSER GNU PUBLIC LICENSE.
+	PLEASE READ THE FILE "COPYING" IN THE TOP LEVEL DIRECTORY.
 
 Module Name:
 
-    precomp.h
+	precomp.h
 
 Abstract:
 
-    The Native Command Line Interface (NCLI) is the command shell for the
-    TinyKRNL OS.
+	The Native Command Line Interface (NCLI) is the command shell for the
+	TinyKRNL OS.
 
 Environment:
 
-    Native mode
+	Native mode
 
 Revision History:
 
-    Alex Ionescu - Started Implementation - 23-Mar-06
+	Alex Ionescu - Started Implementation - 23-Mar-06
 
 --*/
 #pragma once
@@ -31,6 +31,16 @@ Revision History:
 
 #define WIN32_NO_STATUS
 #define NTOS_MODE_USER
+
+// Matti: stolen from vcruntime.h (which we don't want to add ourselves)
+#ifndef _UINTPTR_T_DEFINED
+    #define _UINTPTR_T_DEFINED
+    #ifdef _WIN64
+        typedef unsigned __int64  uintptr_t;
+    #else
+        typedef unsigned int uintptr_t;
+    #endif
+#endif
 
 #include <stdarg.h>
 #include <excpt.h>
@@ -73,8 +83,8 @@ Revision History:
 //
 typedef enum _CON_DEVICE_TYPE
 {
-    KeyboardType,
-    MouseType
+	KeyboardType,
+	MouseType
 } CON_DEVICE_TYPE;
 
 //
@@ -84,18 +94,18 @@ PRINTF_ATTR(1, 2)
 NTSTATUS
 __cdecl
 RtlCliDisplayString(
-    IN PCH Message,
-    ...
+	IN PCH Message,
+	...
 );
 
 NTSTATUS
 RtlCliPrintString(
-    IN PUNICODE_STRING Message
+	IN PUNICODE_STRING Message
 );
 
 NTSTATUS
 RtlCliPutChar(
-    IN WCHAR Char
+	IN WCHAR Char
 );
 
 //
@@ -103,18 +113,18 @@ RtlCliPutChar(
 //
 NTSTATUS
 RtlCliOpenInputDevice(
-    OUT PHANDLE Handle,
-    IN CON_DEVICE_TYPE Type
+	OUT PHANDLE Handle,
+	IN CON_DEVICE_TYPE Type
 );
 
 CHAR
 RtlCliGetChar(
-    IN HANDLE hDriver
+	IN HANDLE hDriver
 );
 
 PCHAR
 RtlCliGetLine(
-    IN HANDLE hDriver
+	IN HANDLE hDriver
 );
 
 //
@@ -122,32 +132,32 @@ RtlCliGetLine(
 //
 NTSTATUS
 RtlCliListDrivers(
-    VOID
+	VOID
 );
 
 NTSTATUS
 RtlCliListProcesses(
-    VOID
+	VOID
 );
 
 NTSTATUS
 RtlCliDumpSysInfo(
-    VOID
+	VOID
 );
 
 NTSTATUS
 RtlCliShutdown(
-    VOID
+	VOID
 );
 
 NTSTATUS
 RtlCliReboot(
-    VOID
+	VOID
 );
 
 NTSTATUS
 RtlCliPowerOff(
-    VOID
+	VOID
 );
 
 //
@@ -169,23 +179,23 @@ ULONG RtlCliGetCurrentDirectory(IN OUT PWSTR CurrentDirectory);
 HANDLE hKeyboard;
 
 typedef struct _KBD_RECORD {
-    WORD  wVirtualScanCode;
-    DWORD dwControlKeyState;
-    UCHAR AsciiChar;
-    BOOL  bKeyDown;
+	WORD  wVirtualScanCode;
+	DWORD dwControlKeyState;
+	UCHAR AsciiChar;
+	BOOL  bKeyDown;
 } KBD_RECORD, * PKBD_RECORD;
 
 void IntTranslateKey(PKEYBOARD_INPUT_DATA InputData, KBD_RECORD* kbd_rec);
 
-#define RIGHT_ALT_PRESSED     0x0001 // the right alt key is pressed.
-#define LEFT_ALT_PRESSED      0x0002 // the left alt key is pressed.
-#define RIGHT_CTRL_PRESSED    0x0004 // the right ctrl key is pressed.
-#define LEFT_CTRL_PRESSED     0x0008 // the left ctrl key is pressed.
-#define SHIFT_PRESSED         0x0010 // the shift key is pressed.
-#define NUMLOCK_ON            0x0020 // the numlock light is on.
-#define SCROLLLOCK_ON         0x0040 // the scrolllock light is on.
-#define CAPSLOCK_ON           0x0080 // the capslock light is on.
-#define ENHANCED_KEY          0x0100 // the key is enhanced.
+#define RIGHT_ALT_PRESSED	 0x0001 // the right alt key is pressed.
+#define LEFT_ALT_PRESSED	  0x0002 // the left alt key is pressed.
+#define RIGHT_CTRL_PRESSED	0x0004 // the right ctrl key is pressed.
+#define LEFT_CTRL_PRESSED	 0x0008 // the left ctrl key is pressed.
+#define SHIFT_PRESSED		 0x0010 // the shift key is pressed.
+#define NUMLOCK_ON			0x0020 // the numlock light is on.
+#define SCROLLLOCK_ON		 0x0040 // the scrolllock light is on.
+#define CAPSLOCK_ON		   0x0080 // the capslock light is on.
+#define ENHANCED_KEY		  0x0100 // the key is enhanced.
 
 // Process:
 
@@ -199,8 +209,8 @@ PRINTF_ATTR(1, 2)
 VOID
 __cdecl
 Printf(
-    _In_ PCCH Format,
-    _In_ ...
+	_In_ PCCH Format,
+	_In_ ...
 );
 
 UINT StringToArguments(CHAR *str);
@@ -229,8 +239,8 @@ void FillUnicodeStringWithAnsi(OUT PUNICODE_STRING us, IN PCHAR as);
 //===========================================================
 
 BOOLEAN SetUnicodeString(
-    UNICODE_STRING* pustrRet,
-    WCHAR* pwszData
+	UNICODE_STRING* pustrRet,
+	WCHAR* pwszData
 );
 
 BOOLEAN DisplayString(WCHAR* pwszData
@@ -239,26 +249,26 @@ BOOLEAN DisplayString(WCHAR* pwszData
 HANDLE InitHeapMemory(VOID);
 
 BOOLEAN DeinitHeapMemory(
-    HANDLE hHeap
+	HANDLE hHeap
 );
 
 PVOID kmalloc(
-    HANDLE hHeap,
-    int nSize
+	HANDLE hHeap,
+	int nSize
 );
 
 BOOLEAN kfree(
-    HANDLE hHeap,
-    PVOID pMemory
+	HANDLE hHeap,
+	PVOID pMemory
 );
 
 BOOLEAN AppendString(
-    WCHAR* pszInput,
-    WCHAR* pszAppend
+	WCHAR* pszInput,
+	WCHAR* pszAppend
 );
 
 ULONG GetStringLength(
-    WCHAR* pszInput
+	WCHAR* pszInput
 );
 
 //
@@ -267,22 +277,22 @@ ULONG GetStringLength(
 
 PRINTF_ATTR(2, 3)
 NTSYSAPI int __cdecl sprintf(
-    _Pre_notnull_ _Always_(_Post_z_) char* const _Buffer,
-    _In_z_ _Printf_format_string_    char const* const _Format,
-    ...);
+	_Pre_notnull_ _Always_(_Post_z_) char* const _Buffer,
+	_In_z_ _Printf_format_string_	char const* const _Format,
+	...);
 
 WPRINTF_ATTR(2, 3)
 NTSYSAPI int __cdecl swprintf(
-    _Out_writes_opt_(_BufferCount) _Always_(_Post_z_) wchar_t* const _Buffer,
-    _In_ size_t const _BufferCount,
-    _In_z_ _Printf_format_string_ wchar_t const* const _Format,
-    ...);
+	_Out_writes_opt_(_BufferCount) _Always_(_Post_z_) wchar_t* const _Buffer,
+	_In_ size_t const _BufferCount,
+	_In_z_ _Printf_format_string_ wchar_t const* const _Format,
+	...);
 
 NTSYSAPI int __cdecl _vsnprintf(
-    char* buffer,
-    size_t count,
-    const char* format,
-    va_list argptr
+	char* buffer,
+	size_t count,
+	const char* format,
+	va_list argptr
 );
 
 #define SE_MIN_WELL_KNOWN_PRIVILEGE (2L)
