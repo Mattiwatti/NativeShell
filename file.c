@@ -340,25 +340,25 @@ RtlCliListDirectory(VOID)
            //
            RtlCliDumpFileInfo(Entry);
 
-           if (++i > 20)
-           {
-             i = 0;
-             RtlCliDisplayString("Continue listing (Y/N):");         
-             while (TRUE)
-             {
-               c = RtlCliGetChar(hKeyboard);
-               if (c == 'n' || c == 'N')
-               {
-                 RtlCliDisplayString("\n");
-                 return STATUS_SUCCESS;
-               }
-               if (c == 'y' || c == 'Y')
-               {
-                 break;
-               }
-             }
-             RtlCliDisplayString("\n");
-           }
+            if (++i > 20)
+            {
+              i = 0;
+              RtlCliDisplayString("Continue listing (y/n):");         
+              while (TRUE)
+              {
+                c = RtlCliGetChar(hKeyboard);
+                if (c == 'n' || c == 'N')
+                {
+                  RtlCliDisplayString("\n");
+                  return STATUS_SUCCESS;
+                }
+                if (c == 'y' || c == 'Y')
+                {                  
+                  break;
+                }
+              }     
+              RtlCliDisplayString("\n");
+            }
 
            //
            // Make sure we still have a file

@@ -33,6 +33,16 @@ HANDLE hKeyboard;
 HANDLE hHeap;
 HANDLE hKey;
 
+#if defined(_M_IX86)
+#define __NCLI_VER__ "0.13.0 x86"
+#elif defined(_M_AMD64)
+#define __NCLI_VER__ "0.13.0 x64"
+#elif defined(_M_ARM)
+#define __NCLI_VER__ "0.13.0 ARM"
+#elif defined(_M_ARM64)
+#define __NCLI_VER__ "0.13.0 ARM64"
+#endif
+
 WCHAR *helpstr[] =
 {
   {
@@ -431,8 +441,8 @@ NTSTATUS NTAPI NtProcessStartup(PPEB Context)
 
     //
     // Show banner
-    RtlCliDisplayString("Native Shell [Version 1.0.0.0] (" __DATE__ " " __TIME__ ")\n");
-    RtlCliDisplayString("(C) Copyright 2010-2011 amdf, 2021-2024 Matti\n");
+    RtlCliDisplayString("Native Shell [Version " __NCLI_VER__ "] (" __DATE__ " " __TIME__ ")\n");
+    RtlCliDisplayString("(C) Copyright 2010-2025 amdf, 2021-2025 Matti\n");
     RtlCliDisplayString("(C) Copyright 2006 TinyKRNL Project\n\n");
     RtlCliDisplayString("Type \"help\".\n\n");
 
