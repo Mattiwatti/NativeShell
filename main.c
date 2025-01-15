@@ -33,14 +33,15 @@ HANDLE hKeyboard;
 HANDLE hHeap;
 HANDLE hKey;
 
-#if defined(_M_IX86)
-#define __NCLI_VER__ "0.13.1 x86"
-#elif defined(_M_AMD64)
-#define __NCLI_VER__ "0.13.1 x64"
+#define __APP_VER__ "0.13.2"
+#if defined(_M_AMD64)
+#define __NCLI_VER__ __APP_VER__ " (x64)"
+#elif defined(_M_IX86)
+#define __NCLI_VER__ __APP_VER__ " (x86)"
 #elif defined(_M_ARM)
-#define __NCLI_VER__ "0.13.1 ARM"
+#define __NCLI_VER__ __APP_VER__ " (ARM)"
 #elif defined(_M_ARM64)
-#define __NCLI_VER__ "0.13.1 ARM64"
+#define __NCLI_VER__ __APP_VER__ " (ARM64)"
 #endif
 
 WCHAR *helpstr[] =
