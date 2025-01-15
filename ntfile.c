@@ -125,7 +125,7 @@ BOOLEAN NtFileWriteFile(HANDLE hFile, LPVOID lpData, DWORD dwBufferSize, DWORD* 
   {
     if (pRetWrittenSize) 
     {
-      *pRetWrittenSize = (DWORD)sIoStatus.Information;
+      *pRetWrittenSize = (DWORD)(sIoStatus.Information & MAXULONG);
     }
     return TRUE;
   }
@@ -140,7 +140,7 @@ BOOLEAN NtFileCopyFile(WCHAR* pszSrc, WCHAR* pszDst)
     BYTE byData[8192];
     LONGLONG lFileSize = 0;
     LONGLONG lWrittenSizeTotal = 0;
-    DWORD dwReadedSize = 0;
+    DWORD dwReadSize = 0;
     DWORD dwWrittenSize = 0;
     BOOLEAN bResult = 0;
 
@@ -169,23 +169,23 @@ BOOLEAN NtFileCopyFile(WCHAR* pszSrc, WCHAR* pszDst)
 
     while (1)
     {
-        dwReadedSize = 0;
+        dwReadSize = 0;
 
-        if (NtFileReadFile(hSrc, byData, 8192, &dwReadedSize) == FALSE)
+        if (NtFileReadFile(hSrc, byData, 8192, &dwReadSize) == FALSE)
         {
             NtClose(hSrc);
             NtClose(hDst);
             return FALSE;
         }
 
-        if (NtFileWriteFile(hDst, byData, dwReadedSize, &dwWrittenSize) == FALSE)
+        if (NtFileWriteFile(hDst, byData, dwReadSize, &dwWrittenSize) == FALSE)
         {
             NtClose(hSrc);
             NtClose(hDst);
             return FALSE;
         }
 
-        if (dwReadedSize != dwWrittenSize)
+        if (dwReadSize != dwWrittenSize)
         {
             NtClose(hSrc);
             NtClose(hDst);
@@ -206,7 +206,7 @@ BOOLEAN NtFileCopyFile(WCHAR* pszSrc, WCHAR* pszDst)
     return TRUE;
 }
 
-BOOLEAN NtFileReadFile(HANDLE hFile, LPVOID pOutBuffer, DWORD dwOutBufferSize, DWORD* pRetReadedSize)
+BOOLEAN NtFileReadFile(HANDLE hFile, LPVOID pOutBuffer, DWORD dwOutBufferSize, DWORD* pRetReadSize)
 {
   IO_STATUS_BLOCK sIoStatus;
   NTSTATUS ntStatus = 0;
@@ -216,9 +216,9 @@ BOOLEAN NtFileReadFile(HANDLE hFile, LPVOID pOutBuffer, DWORD dwOutBufferSize, D
   ntStatus = NtReadFile( hFile, NULL, NULL, NULL, &sIoStatus, pOutBuffer, dwOutBufferSize, NULL, NULL);
   if (ntStatus == STATUS_SUCCESS) 
   {
-    if (pRetReadedSize) 
+    if (pRetReadSize) 
     {
-      *pRetReadedSize = (DWORD)sIoStatus.Information;
+      *pRetReadSize = (DWORD)(sIoStatus.Information & MAXULONG);
     }
 
     return TRUE;

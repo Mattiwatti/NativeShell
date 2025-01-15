@@ -34,13 +34,13 @@ HANDLE hHeap;
 HANDLE hKey;
 
 #if defined(_M_IX86)
-#define __NCLI_VER__ "0.13.0 x86"
+#define __NCLI_VER__ "0.13.1 x86"
 #elif defined(_M_AMD64)
-#define __NCLI_VER__ "0.13.0 x64"
+#define __NCLI_VER__ "0.13.1 x64"
 #elif defined(_M_ARM)
-#define __NCLI_VER__ "0.13.0 ARM"
+#define __NCLI_VER__ "0.13.1 ARM"
 #elif defined(_M_ARM64)
-#define __NCLI_VER__ "0.13.0 ARM64"
+#define __NCLI_VER__ "0.13.1 ARM64"
 #endif
 
 WCHAR *helpstr[] =
