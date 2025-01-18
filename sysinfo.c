@@ -468,13 +468,19 @@ RtlCliDumpSysInfo(VOID)
     //
     // Display FileSystem Cache Information
     //
-    RtlCliDisplayString("[CACHE] Size: %ldKB. Peak: %ldKB. "
-                        "Min WS: %ldKB. Max WS: %ldKB\n",
-                        (ULONG)CacheInfo.CurrentSize / 1024,
-                        (ULONG)CacheInfo.PeakSize / 1024,
-                        (ULONG)CacheInfo.MinimumWorkingSet,
-                        (ULONG)CacheInfo.MaximumWorkingSet);
-
+    Status = NtQuerySystemInformation(SystemFileCacheInformation,
+                                      &CacheInfo,
+                                      sizeof(CacheInfo),
+                                      NULL);
+    if (NT_SUCCESS(Status)) {
+        RtlCliDisplayString("[CACHE] Size: %lluKB. Peak: %lluKB. "
+                            "Min WS: %lluKB. Max WS: %lluKB\n",
+                            CacheInfo.CurrentSize / 1024,
+                            CacheInfo.PeakSize / 1024,
+                            CacheInfo.MinimumWorkingSet,
+                            CacheInfo.MaximumWorkingSet);
+    }
+    
     //
     // Return success
     //

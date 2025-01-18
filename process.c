@@ -35,24 +35,25 @@ NTSTATUS CreateNativeProcess(IN PWSTR file_name, IN PWSTR cmd_line, OUT PHANDLE 
 
     status = RtlCreateProcessParameters(&processparameters, &imgname, &dllpath, &dllpath, &cmdline, Env, 0, 0, 0, 0);
 
-    if (processinformation.ImageInformation.SubSystemType != IMAGE_SUBSYSTEM_NATIVE)
-    {
-      RtlCliDisplayString("\nThe %S application cannot be run in native mode.\n", file_name);
-      return STATUS_UNSUCCESSFUL;
-    }
-
-    if (!NT_SUCCESS(status))
-    {
-      RtlCliDisplayString("RtlCreateProcessParameters failed\n");
-      return status;
-    }
-
-    status = NtResumeThread(processinformation.ThreadHandle, NULL);
-    if (!NT_SUCCESS(status))
-    {
-        RtlCliDisplayString("NtResumeThread failed\n");
-        return status;
-    }
+ if (!NT_SUCCESS(status))
+ {
+   RtlCliDisplayString("RtlCreateProcessParameters failed\n");
+   return status;
+ }
+ 
+ if (processinformation.ImageInformation.SubSystemType != IMAGE_SUBSYSTEM_NATIVE)
+ {
+   RtlCliDisplayString("\nThe %S application cannot be run in native mode.\n"
+   "Subsystem: %d\n"
+   "Subsystem version: %d\n"
+   "Machine: %d\n",
+        file_name, 
+        processinformation.ImageInformation.SubSystemType,
+        processinformation.ImageInformation.SubSystemVersion,
+        processinformation.ImageInformation.Machine
+    );
+   return STATUS_UNSUCCESSFUL;
+ }
 
     Printf("Launching Process: %ls, DllPath = %ls, CmdLine = %ls\n", imgname.Buffer, dllpath.Buffer, cmdline.Buffer);
 

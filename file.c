@@ -82,12 +82,11 @@ NTSTATUS RtlCliSetCurrentDirectory(PCHAR Directory)
         return STATUS_SUCCESS;
     }
 
-    GetFullPath(Directory, buf, TRUE);
-    RtlInitUnicodeString(&us, buf);
-    RtlSetCurrentDirectory_U(&us);
-    RtlFreeUnicodeString(&us);
+  GetFullPath(Directory, buf, TRUE);
+  RtlInitUnicodeString(&us, buf);
+  RtlSetCurrentDirectory_U(&us);
 
-    return STATUS_SUCCESS;
+  return STATUS_SUCCESS;
 }
 
 /*++

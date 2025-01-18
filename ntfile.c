@@ -312,9 +312,8 @@ BOOLEAN NtFileDeleteFile(PWSTR filename)
 
     status = NtDeleteFile(&oa);
 
-    RtlFreeUnicodeString(&us);
 
-    return NT_SUCCESS(status);
+  return NT_SUCCESS(status);
 }
 
 BOOLEAN NtFileCreateDirectory(PWSTR dirname)
@@ -346,12 +345,11 @@ BOOLEAN NtFileCreateDirectory(PWSTR dirname)
         0
     );
 
-    if (NT_SUCCESS(status))
-    {
-        NtClose(hFile);
-        RtlFreeUnicodeString(&us);
-        return TRUE;
-    }
+  if (NT_SUCCESS(status))
+  {
+    NtClose(hFile);
+    return TRUE;
+  }
 
     /* if it already exists then return success */
     if (status == STATUS_OBJECT_NAME_COLLISION)
@@ -360,8 +358,7 @@ BOOLEAN NtFileCreateDirectory(PWSTR dirname)
         return TRUE;
     }
 
-    RtlFreeUnicodeString(&us);
-    return FALSE;
+  return FALSE;
 }
 
 /*
@@ -446,10 +443,14 @@ BOOLEAN NtFileMoveFile(IN PWSTR lpExistingFileName, IN PWSTR lpNewFileName, BOOL
       FileRenameInfo,
       sizeof(FILE_RENAME_INFORMATION)+FileNameSize,
       FileRenameInformation );
+    if (!NT_SUCCESS(Status))
+    {
+        RtlCliDisplayString("NtSetInformationFile(FileRenameInformation) failed (Status %lx)\n", Status);
+    }
 
     RtlFreeHeap(RtlGetProcessHeap(), 0, FileRenameInfo);
 
     NtClose(FileHandle);
 
-    return TRUE;
+    return NT_SUCCESS(Status);
 }

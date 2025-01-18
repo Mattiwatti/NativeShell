@@ -349,34 +349,36 @@ typedef struct _SECTION_IMAGE_INFORMATION
         };
         ULONG SubSystemVersion;
     };
-    ULONG GpValue;
-    USHORT ImageCharacteristics;
-    USHORT DllCharacteristics;
-    USHORT Machine;
-    BOOLEAN ImageContainsCode;
-#if (NTDDI_VERSION >= NTDDI_LONGHORN)
     union
     {
         struct
         {
-            UCHAR ComPlusNativeReady:1;
-            UCHAR ComPlusILOnly:1;
-            UCHAR ImageDynamicallyRelocated:1;
-            UCHAR ImageMappedFlat:1;
-            UCHAR Reserved:4;
+            USHORT MajorOperatingSystemVersion;
+            USHORT MinorOperatingSystemVersion;
         };
-        UCHAR ImageFlags;
+        ULONG OperatingSystemVersion;
     };
-#else
-    BOOLEAN Spare1;
-#endif
+    USHORT ImageCharacteristics;
+    USHORT DllCharacteristics;
+    USHORT Machine;
+    BOOLEAN ImageContainsCode;
+    union
+    {
+        UCHAR ImageFlags;
+        struct
+        {
+            UCHAR ComPlusNativeReady : 1;
+            UCHAR ComPlusILOnly : 1;
+            UCHAR ImageDynamicallyRelocated : 1;
+            UCHAR ImageMappedFlat : 1;
+            UCHAR BaseBelow4gb : 1;
+            UCHAR ComPlusPrefer32bit : 1;
+            UCHAR Reserved : 2;
+        };
+    };
     ULONG LoaderFlags;
     ULONG ImageFileSize;
-#if (NTDDI_VERSION >= NTDDI_LONGHORN)
     ULONG CheckSum;
-#else
-    ULONG Reserved[1];
-#endif
 } SECTION_IMAGE_INFORMATION, *PSECTION_IMAGE_INFORMATION;
 
 #ifndef NTOS_MODE_USER

@@ -35,13 +35,13 @@ HANDLE hKey;
 
 #define __APP_VER__ "0.13.2"
 #if defined(_M_AMD64)
-#define __NCLI_VER__ __APP_VER__ " (x64)"
+#define __NCLI_VER__ __APP_VER__ " x64"
 #elif defined(_M_IX86)
-#define __NCLI_VER__ __APP_VER__ " (x86)"
+#define __NCLI_VER__ __APP_VER__ " x86"
 #elif defined(_M_ARM)
-#define __NCLI_VER__ __APP_VER__ " (ARM)"
+#define __NCLI_VER__ __APP_VER__ " ARM"
 #elif defined(_M_ARM64)
-#define __NCLI_VER__ __APP_VER__ " (ARM64)"
+#define __NCLI_VER__ __APP_VER__ " ARM64"
 #endif
 
 WCHAR *helpstr[] =
@@ -337,7 +337,7 @@ VOID RtlClipProcessMessage(PCHAR Command)
         //
 
         WCHAR filename[MAX_PATH];
-        HANDLE hProcess;
+        HANDLE hProcess = NULL;
 
         GetFullPath(IN xargv[1], OUT filename, FALSE);
 
@@ -345,28 +345,25 @@ VOID RtlClipProcessMessage(PCHAR Command)
         {
            ANSI_STRING as;
            UNICODE_STRING us;
+          RtlInitAnsiString(&as, Command);
+          RtlAnsiStringToUnicodeString(&us, &as, TRUE);
+                             
+          NtClose(hKeyboard);
 
            RtlInitAnsiString(&as, Command);
            RtlAnsiStringToUnicodeString(&us, &as, TRUE);
 
-           NtClose(hKeyboard);
-           //RtlCliDisplayString("Keyboard is closed\n");
+          RtlFreeUnicodeString(&us);
 
-           CreateNativeProcess(filename, us.Buffer, &hProcess);
-
-           RtlFreeAnsiString(&as);
-           RtlFreeUnicodeString(&us);
-
-           //RtlCliDisplayString("Waiting for process terminations\n");
-           NtWaitForSingleObject(hProcess, FALSE, NULL);
-
-           RtlCliOpenInputDevice(&hKeyboard, KeyboardType);
-           //RtlCliDisplayString("Keyboard restored\n");
-        }
-        else
+          NtWaitForSingleObject(hProcess, FALSE, NULL); // Matti: how can this possibly ever do anything but return STATUS_INVALID_HANDLE? hProcess isn't initialized
+                    
+          RtlCliOpenInputDevice(&hKeyboard, KeyboardType);
+        } else
         {
-           RtlCliDisplayString("%s not recognized\n", Command);
-        }
+          RtlCliDisplayString("%s not recognized\n"
+              "Add .exe if you want to lauch executable file."
+              "\nType \"help\" for the list of commands.\n", Command);
+        }        
     }
 }
 
@@ -442,10 +439,7 @@ NTSTATUS NTAPI NtProcessStartup(PPEB Context)
 
     //
     // Show banner
-    RtlCliDisplayString("Native Shell [Version " __NCLI_VER__ "] (" __DATE__ " " __TIME__ ")\n");
-    RtlCliDisplayString("(C) Copyright 2010-2025 amdf, 2021-2025 Matti\n");
-    RtlCliDisplayString("(C) Copyright 2006 TinyKRNL Project\n\n");
-    RtlCliDisplayString("Type \"help\".\n\n");
+    RtlCliDisplayString("Native Shell v" __NCLI_VER__ " (" __DATE__ " " __TIME__ ")\n\n");
 
     while (!hKeyboard || !NT_SUCCESS(Status))
     {
