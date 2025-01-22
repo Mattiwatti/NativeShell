@@ -47,6 +47,7 @@ Revision History:
 #include <windef.h>
 #include <winnt.h>
 #include <ntddkbd.h>
+#include <sdkddkver.h>
 #include "ntfile.h"
 #include "ntreg.h"
 
