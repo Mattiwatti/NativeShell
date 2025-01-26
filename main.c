@@ -65,9 +65,7 @@ const PCWCH helpstr[] =
 
 VOID RtlClipProcessMessage(PCHAR Command)
 {
-    WCHAR CurrentDirectory[MAX_PATH];
-    WCHAR buf1[MAX_PATH];
-    WCHAR buf2[MAX_PATH];
+    WCHAR CurrentDirectory[MAX_PATH] = {0};
     UNICODE_STRING CurrentDirectoryString;
     CHAR CommandBuf[BUFFER_SIZE] = {0};
     UINT argc;
@@ -230,82 +228,91 @@ VOID RtlClipProcessMessage(PCHAR Command)
     }
     else if (!_strnicmp(argv[0], CMDSTR("copy")))
     {
-      // Copy file
-      if (argc > 2)
-      {        
-        GetFullPath(argv[2], buf1, FALSE);
-        GetFullPath(argv[3], buf2, FALSE);
-        RtlCliDisplayString("\nCopy %S to %S\n", buf1, buf2);
-        if (FileExists(buf1))
+        // Copy file
+        if (argc > 2)
         {
-          if (!NtFileCopyFile(buf1, buf2))
-          {
-            RtlCliDisplayString("Failed.\n");
-          }
+            WCHAR buf1[MAX_PATH] = {0};
+            WCHAR buf2[MAX_PATH] = {0};
+            GetFullPath(argv[1], buf1, FALSE);
+            GetFullPath(argv[2], buf2, FALSE);
+            RtlCliDisplayString("\nCopy %S to %S\n", buf1, buf2);
+            if (FileExists(buf1))
+            {
+                if (!NtFileCopyFile(buf1, buf2))
+                {
+                    RtlCliDisplayString("Failed.\n");
+                }
+            }
+            else
+            {
+                RtlCliDisplayString("File does not exist.\n");
+            }
         }
         else
         {
-          RtlCliDisplayString("File does not exist.\n");
+            RtlCliDisplayString("Not enough arguments.\n");
         }
-      } else
-      {
-        RtlCliDisplayString("Not enough arguments.\n");
-      }
     }
     else if (!_strnicmp(argv[0], CMDSTR("move")))
     {
-      // Move/rename file
-      if (argc > 2)
-      {        
-        GetFullPath(argv[2], buf1, FALSE);
-        GetFullPath(argv[3], buf2, FALSE);
-        RtlCliDisplayString("\nMove %S to %S\n", buf1, buf2);
-        if (FileExists(buf1))
+        // Move/rename file
+        if (argc > 2)
         {
-          if (!NtFileMoveFile(buf1, buf2, FALSE))
-          {
-            RtlCliDisplayString("Failed.\n");
-          }
+            WCHAR buf1[MAX_PATH] = {0};
+            WCHAR buf2[MAX_PATH] = {0};
+            GetFullPath(argv[1], buf1, FALSE);
+            GetFullPath(argv[2], buf2, FALSE);
+            RtlCliDisplayString("\nMove %S to %S\n", buf1, buf2);
+            if (FileExists(buf1))
+            {
+                if (!NtFileMoveFile(buf1, buf2, FALSE))
+                {
+                    RtlCliDisplayString("Failed.\n");
+                }
+            }
+            else
+            {
+                RtlCliDisplayString("File does not exist.\n");
+            }
         }
         else
         {
-          RtlCliDisplayString("File does not exist.\n");
+            RtlCliDisplayString("Not enough arguments.\n");
         }
-      } else
-      {
-        RtlCliDisplayString("Not enough arguments.\n");
-      }
     }
     else if (!_strnicmp(argv[0], CMDSTR("del")))
     {
-      // Delete file
-      if (argc > 1)
-      {        
-        GetFullPath(argv[2], buf1, FALSE);
-        if (FileExists(buf1))
+        // Delete file
+        if (argc > 1)
         {
-          RtlCliDisplayString("\nDelete %S\n", buf1);
+            WCHAR buf1[MAX_PATH] = {0};
+            GetFullPath(argv[1], buf1, FALSE);
+            if (FileExists(buf1))
+            {
+                RtlCliDisplayString("\nDelete %S\n", buf1);
 
-          if (!NtFileDeleteFile(buf1))
-          {
-            RtlCliDisplayString("Failed.\n");
-          }
+                if (!NtFileDeleteFile(buf1))
+                {
+                    RtlCliDisplayString("Failed.\n");
+                }
+            }
+            else
+            {
+                RtlCliDisplayString("File does not exist.\n");
+            }
         }
         else
         {
-          RtlCliDisplayString("File does not exist.\n");
+            RtlCliDisplayString("Not enough arguments.\n");
         }
-      } else
-      {
-        RtlCliDisplayString("Not enough arguments.\n");
-      }
     }
     else if (!_strnicmp(argv[0], CMDSTR("md")))
     {
-      // Make directory
-      if (argc > 1)
-      {        
-        GetFullPath(argv[2], buf1, FALSE);
+        // Make directory
+        if (argc > 1)
+        {
+            WCHAR buf1[MAX_PATH] = {0};
+            GetFullPath(argv[1], buf1, FALSE);
 
             RtlCliDisplayString("\nCreate directory %S\n", buf1);
 
