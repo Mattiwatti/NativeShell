@@ -458,7 +458,7 @@ NTSTATUS NTAPI NtProcessStartup(PPEB Context)
 
     //
     // Show banner
-    RtlCliDisplayString("Native Shell v" __NCLI_VER__ " (" __DATE__ " " __TIME__ ")\n\n");
+    RtlCliDisplayString("Native Shell v" __NCLI_VER__ " (build " __DATE__ " " __TIME__ ")\n\n");
 
     while (!hKeyboard || !NT_SUCCESS(Status))
     {
