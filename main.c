@@ -44,40 +44,25 @@ HANDLE hKey;
 #define __NCLI_VER__ __APP_VER__ " ARM64"
 #endif
 
-WCHAR *helpstr[] =
-{
-  {
-    L"\n"
-    L"cd X     - Change directory to X    md X     - Make directory X\n"
-    L"copy X Y - Copy file X to Y         poweroff - Power off PC\n"
-    L"dir      - Show directory contents  pwd      - Print working directory\n"
-    L"del X    - Delete file X            reboot   - Reboot PC\n"
-    L"devtree  - Dump device tree         shutdown - Shutdown PC\n"
-    L"\x0000"
-  },
-  {
-    L"exit     - Exit shell               sysinfo  - Dump system information\n"
-    L"lm       - List modules             vid      - Test screen output\n"
-    L"lp       - List processes           move X Y - Move file X to Y\n"
-    L"\n"
-    L"If a command is not in the list, it is treated as an executable name\n"
-    L"\n"
-    L"\x0000"
-  }
-};
-/*++
- * @name RtlClipProcessMessage
- *
- * The RtlClipProcessMessage routine
- *
- * @param Command
- *        FILLMEIN
- *
- * @return None.
- *
- * @remarks Documentation for this routine needs to be completed.
- *
- *--*/
+const PCWCH helpstr[] =
+    {
+        {L"\n"
+         L"cd X     - Change directory to X    md X     - Make directory X\n"
+         L"copy X Y - Copy file X to Y         poweroff - Power off PC\n"
+         L"dir X    - Show directory contents  pwd      - Print working directory\n"
+         L"del X    - Delete file X            reboot   - Reboot PC\n"
+         L"devtree  - Dump device tree         shutdown - Shutdown PC\n"
+         L"\x0000"},
+        {L"exit     - Exit shell            sysinfo     - Dump system information\n"
+         L"lm       - List modules          drawtext X  - Draw string X\n"
+         L"lp       - List processes        move X Y    - Move file X to Y\n"
+         L"testvid  - Test screen output    testarg X Y - Test argument parsing\n"
+         L"\n"
+         L"X: - change drive letter to X\n"
+         L"If a command is not in the list, it is treated as an executable name\n"
+         L"\n"
+         L"\x0000"}};
+
 VOID RtlClipProcessMessage(PCHAR Command)
 {
     WCHAR CurrentDirectory[MAX_PATH];
@@ -101,7 +86,7 @@ VOID RtlClipProcessMessage(PCHAR Command)
         DeinitHeapMemory(hHeap);
         NtTerminateProcess(NtCurrentProcess(), 0);
     }
-    else if (!_strnicmp(argv[0], CMDSTR("argtest")))
+    else if (!_strnicmp(argv[0], CMDSTR("testarg")))
     {
       UINT i = 0;
       
@@ -205,7 +190,7 @@ VOID RtlClipProcessMessage(PCHAR Command)
     {
         RtlCliPowerOff();
     }
-    else if (!_strnicmp(argv[0], CMDSTR("vid")))
+    else if (!_strnicmp(argv[0], CMDSTR("testvid")))
     {
         UINT j;
         WCHAR w;
