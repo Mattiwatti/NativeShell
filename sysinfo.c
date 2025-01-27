@@ -84,31 +84,12 @@ RtlCliListDrivers(VOID)
     PRTL_PROCESS_MODULES ModuleInfo;
     PRTL_PROCESS_MODULE_INFORMATION ModuleEntry;
     NTSTATUS Status;
-    ULONG Size = 0;
+    ULONG Size = 1024*1024;
     ULONG i;
 
     //
-    // Get the count first
-    //
-    Status = NtQuerySystemInformation(SystemModuleInformation,
-        NULL,
-        0,
-        &Size);
-    if (Status != STATUS_INFO_LENGTH_MISMATCH)
-        return Status;
-
-    //
-    // Get the total buffer size
-    //
-    //Size = sizeof(*ModuleInfo) + (Size * sizeof(*ModuleInfo)); // Matti: ???
-    Size *= 2;
-
-    //
     // Allocate it
-    //
     ModuleInfo = RtlAllocateHeap(RtlGetProcessHeap(), HEAP_ZERO_MEMORY, Size);
-    if (ModuleInfo == NULL)
-        return STATUS_INSUFFICIENT_RESOURCES;
 
     //
     // Query the buffer
@@ -164,7 +145,8 @@ RtlCliListDrivers(VOID)
             ModuleEntry->ImageSize);
     }
 
-    //
+    RtlFreeHeap(RtlGetProcessHeap(), 0, ModuleInfo);
+
     // Return error code
     //
     return Status;
