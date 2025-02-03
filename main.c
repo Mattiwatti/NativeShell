@@ -33,7 +33,7 @@ HANDLE hKeyboard;
 HANDLE hHeap;
 HANDLE hKey;
 
-#define __APP_VER__ "0.14.0"
+#define __APP_VER__ "0.14.1"
 #if defined(_M_AMD64)
 #define __NCLI_VER__ __APP_VER__ " x64"
 #elif defined(_M_IX86)
