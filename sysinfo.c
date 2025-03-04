@@ -199,12 +199,12 @@ NTSTATUS RtlCliListProcesses(VOID)
         //
         // Display basic data
         //
-        RtlCliDisplayString("[%lu] %ls - WS/PF/V:[%ldK/%ldK/%ldK] Threads: %ld\n",
+        RtlCliDisplayString("[%lu] %ls - WS/PF/V:[%llu MB/%llu MB/%llu MB] Threads: %lu\n",
                          (ULONG)(ULONG_PTR)ModuleInfo->UniqueProcessId,
                          ModuleInfo->ImageName.Buffer,
-                         (ULONG)ModuleInfo->WorkingSetSize / 1024,
-                         (ULONG)ModuleInfo->PagefileUsage / 1024,
-                         (ULONG)ModuleInfo->VirtualSize / 1024,
+                         (SIZE_T)ModuleInfo->WorkingSetSize / 1024ull / 1024ull,
+                         (SIZE_T)ModuleInfo->PagefileUsage / 1024ull / 1024ull,
+                         (SIZE_T)ModuleInfo->VirtualSize / 1024ull / 1024ull,
                          ModuleInfo->NumberOfThreads);
 
 
@@ -350,7 +350,10 @@ RtlCliDumpSysInfo(VOID)
     RtlCliDisplayString("[CPU] %s Family %d Model %x Stepping %x. "
         "Feature Bits: 0x%X NX: 0x%x\n",
         (ProcInfo.ProcessorArchitecture ==
-            PROCESSOR_ARCHITECTURE_INTEL) ? "x86" : "Unknown",
+            PROCESSOR_ARCHITECTURE_INTEL) ? "x86" :
+			(ProcInfo.ProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 ? "AMD64" :
+                (ProcInfo.ProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM ? "ARM" :
+                    ProcInfo.ProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM64 ? "ARM64" : "Unknown")),
         ProcInfo.ProcessorLevel,
         ProcInfo.ProcessorRevision >> 8,
         ProcInfo.ProcessorRevision & 0xFF,
@@ -360,17 +363,17 @@ RtlCliDumpSysInfo(VOID)
     //
     // Display RAM Information
     //
-    RtlCliDisplayString("[RAM] Page Size: %dKB. Physical Pages: 0x%X. "
-                        "Total Physical RAM: %dKB\n",
+    RtlCliDisplayString("[RAM] Page Size: %lu KB. Physical Pages: 0x%lX. "
+                        "Total Physical RAM: %llu MB\n",
                         BasicInfo.PageSize / 1024,
                         BasicInfo.NumberOfPhysicalPages,
-                        BasicInfo.NumberOfPhysicalPages * PAGE_SIZE / 1024);
+                        ((SIZE_T)BasicInfo.NumberOfPhysicalPages * (SIZE_T)BasicInfo.PageSize) / 1024ull / 1024ull);
 
     //
     // Display User-Mode Virtual Memory Information
     //
     RtlCliDisplayString(
-        "[USR] User-Mode Range: 0x%p-0x%p. Allocation Granularity: %dKB\n",
+        "[USR] User-Mode Range: 0x%p-0x%p. Allocation Granularity: %d KB\n",
         (PVOID)BasicInfo.MinimumUserModeAddress,
         (PVOID)BasicInfo.MaximumUserModeAddress,
         BasicInfo.AllocationGranularity / 1024);
@@ -378,22 +381,22 @@ RtlCliDumpSysInfo(VOID)
     //
     // Display System Virtual Memory Information
     //
-    RtlCliDisplayString("[VRAM] Free: %dKB. Committed: %dKB. "
-                        "Total: %dKB. Peak: %dKB\n",
-                        PerfInfo.AvailablePages * PAGE_SIZE / 1024,
-                        PerfInfo.CommittedPages * PAGE_SIZE / 1024,
-                        PerfInfo.CommitLimit * PAGE_SIZE / 1024,
-                        PerfInfo.PeakCommitment * PAGE_SIZE / 1024);
+    RtlCliDisplayString("[VRAM] Free: %llu MB. Committed: %llu MB. "
+                        "Total: %llu MB. Peak: %llu MB\n",
+                        (SIZE_T)PerfInfo.AvailablePages * (SIZE_T)PAGE_SIZE / 1024ull / 1024ull,
+                        (SIZE_T)PerfInfo.CommittedPages * (SIZE_T)PAGE_SIZE / 1024ull / 1024ull,
+                        (SIZE_T)PerfInfo.CommitLimit * (SIZE_T)PAGE_SIZE / 1024ull / 1024ull,
+                        (SIZE_T)PerfInfo.PeakCommitment * (SIZE_T)PAGE_SIZE / 1024ull / 1024ull);
 
     //
     // Display Kernel Memory/Pool Information
     //
-    RtlCliDisplayString("[KRNL] Paged: %dKB. Non-Paged: %dKB. "
-                        "Drivers: %dKB Code: %dKB\n",
-                        PerfInfo.PagedPoolPages * PAGE_SIZE / 1024,
-                        PerfInfo.NonPagedPoolPages * PAGE_SIZE / 1024,
-                        PerfInfo.TotalSystemDriverPages * PAGE_SIZE / 1024,
-                        PerfInfo.TotalSystemCodePages * PAGE_SIZE/ 1024);
+    RtlCliDisplayString("[KRNL] Paged: %llu MB. Non-Paged: %llu MB. "
+                        "Drivers: %llu MB Code: %llu MB\n",
+                        (SIZE_T)PerfInfo.PagedPoolPages * (SIZE_T)PAGE_SIZE / 1024ull / 1024ull,
+                        (SIZE_T)PerfInfo.NonPagedPoolPages * (SIZE_T)PAGE_SIZE / 1024ull / 1024ull,
+                        (SIZE_T)PerfInfo.TotalSystemDriverPages * (SIZE_T)PAGE_SIZE / 1024ull / 1024ull,
+                        (SIZE_T)PerfInfo.TotalSystemCodePages * (SIZE_T)PAGE_SIZE/ 1024ull / 1024ull);
 
     //
     // Check if we have two CPUs
@@ -455,12 +458,12 @@ RtlCliDumpSysInfo(VOID)
                                       sizeof(CacheInfo),
                                       NULL);
     if (NT_SUCCESS(Status)) {
-        RtlCliDisplayString("[CACHE] Size: %lluKB. Peak: %lluKB. "
-                            "Min WS: %lluKB. Max WS: %lluKB\n",
-                            CacheInfo.CurrentSize / 1024,
-                            CacheInfo.PeakSize / 1024,
-                            CacheInfo.MinimumWorkingSet,
-                            CacheInfo.MaximumWorkingSet);
+        RtlCliDisplayString("[CACHE] Size: %llu MB. Peak: %llu MB. "
+                            "Min WS: %llu MB. Max WS: %llu MB\n",
+                            CacheInfo.CurrentSize / 1024ull / 1024ull,
+                            CacheInfo.PeakSize / 1024ull / 1024ull,
+                            (CacheInfo.MinimumWorkingSet << 12ull) / 1024ull / 1024ull,
+                            (CacheInfo.MaximumWorkingSet << 12ull) / 1024ull / 1024ull);
     }
     
     //
