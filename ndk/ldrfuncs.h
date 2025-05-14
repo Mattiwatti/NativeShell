@@ -22,8 +22,8 @@ Author:
 //
 // Dependencies
 //
-#include <umtypes.h>
-#include <ldrtypes.h>
+#include "umtypes.h"
+#include "ldrtypes.h"
 #if defined(_MSC_VER) && !defined(NTOS_MODE_USER)
 #include <ntimage.h>
 #endif
@@ -85,6 +85,15 @@ LdrUnloadAlternateResourceModule(
 //
 // Misc. Functions
 //
+NTSTATUS
+NTAPI
+LdrGetDllHandle(
+    _In_opt_ PCWSTR DllPath,
+    _In_opt_ PULONG DllCharacteristics,
+    _In_ PUNICODE_STRING DllName,
+    _Out_ PVOID *DllHandle
+);
+
 NTSTATUS
 NTAPI
 LdrGetProcedureAddress(

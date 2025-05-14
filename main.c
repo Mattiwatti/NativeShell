@@ -130,16 +130,35 @@ VOID RtlClipProcessMessage(PCHAR Command)
     }
     else if (!_strnicmp(argv[0], CMDSTR("drawtext")))
     {
-#if (NTDDI_VERSION >= NTDDI_WIN7)
-        UNICODE_STRING us;
-        ANSI_STRING as;
-        RtlInitAnsiString(&as, &Command[9]);
-        RtlAnsiStringToUnicodeString(&us, &as, TRUE);
-        NtDrawText(&us);
-        RtlFreeUnicodeString(&us);
-#else
-        RtlCliDisplayString("\nNot supported prior to Win7\n");
-#endif
+        typedef
+        NTSTATUS
+        (NTAPI*
+        t_NtDrawText)(
+            IN PUNICODE_STRING DisplayString
+        );
+        t_NtDrawText pNtDrawText = NULL;
+
+        PVOID Ntdll = NULL;
+        UNICODE_STRING NtdllName = RTL_CONSTANT_STRING(L"ntdll.dll");
+        NTSTATUS status = LdrGetDllHandle(NULL, NULL, &NtdllName, &Ntdll);
+        if (NT_SUCCESS(status))
+        {
+            ANSI_STRING ProcedureName = RTL_CONSTANT_STRING("NtDrawText");
+            status = LdrGetProcedureAddress(Ntdll, &ProcedureName, 0, (PVOID*)&pNtDrawText);
+            if (NT_SUCCESS(status))
+            {
+                UNICODE_STRING us;
+                ANSI_STRING as;
+                RtlInitAnsiString(&as, &Command[9]);
+                RtlAnsiStringToUnicodeString(&us, &as, TRUE);
+                pNtDrawText(&us);
+                RtlFreeUnicodeString(&us);
+            }
+            else
+            {
+                RtlCliDisplayString("\nNtDrawText is not supported until Windows 7.\n");
+            }
+        }
     }
     else if (!_strnicmp(argv[0], CMDSTR("pwd")))
     {

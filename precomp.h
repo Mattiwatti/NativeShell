@@ -60,6 +60,7 @@ Revision History:
 #include "ndk/obfuncs.h"
 #include "ndk/kefuncs.h"
 #include "ndk/exfuncs.h"
+#include "ndk/ldrfuncs.h"
 #include "ndk/rtlfuncs.h"
 
 #if defined(__RESHARPER__)

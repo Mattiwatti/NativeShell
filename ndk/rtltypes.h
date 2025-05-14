@@ -1586,13 +1586,6 @@ typedef struct _RTL_USER_PROCESS_INFORMATION
 
 #if (NTDDI_VERSION >= NTDDI_WIN7)
 
-typedef enum _RTL_UMS_SCHEDULER_REASON
-{
-    UmsSchedulerStartup = 0,
-    UmsSchedulerThreadBlocked = 1,
-    UmsSchedulerThreadYield = 2,
-} RTL_UMS_SCHEDULER_REASON, *PRTL_UMS_SCHEDULER_REASON;
-
 typedef enum _RTL_UMSCTX_FLAGS
 {
     UMSCTX_SCHEDULED_THREAD_BIT = 0,
